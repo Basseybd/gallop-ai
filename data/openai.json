@@ -1,0 +1,530 @@
+[
+  {
+    "id": "burger-sf",
+    "category": "Food & Dining",
+    "question": "What is the best burger in SF?",
+    "dataEnds": "Jul 2025",
+    "modelRankings": {
+      "OpenAI": {
+        "Jul 2024": [
+          "Zuni Cafe",
+          "4505 Burgers & BBQ",
+          "Marlowe's burger",
+          "Super Duper Burgers",
+          "Pearl's Deluxe Burgers"
+        ],
+        "Aug 2024": [
+          "Zuni Cafe",
+          "4505 Burgers & BBQ",
+          "Marlowe's burger",
+          "Super Duper Burgers",
+          "Pearl's Deluxe Burgers"
+        ],
+        "Sep 2024": [
+          "Zuni Cafe",
+          "4505 Burgers & BBQ",
+          "Marlowe's burger",
+          "Super Duper Burgers",
+          "Pearl's Deluxe Burgers"
+        ],
+        "Oct 2024": [
+          "Zuni Cafe",
+          "4505 Burgers & BBQ",
+          "Marlowe's burger",
+          "Super Duper Burgers",
+          "Pearl's Deluxe Burgers"
+        ],
+        "Nov 2024": [
+          "Zuni Cafe",
+          "4505 Burgers & BBQ",
+          "Marlowe's burger",
+          "Super Duper Burgers",
+          "Pearl's Deluxe Burgers"
+        ],
+        "Dec 2024": [
+          "Zuni Cafe",
+          "4505 Burgers & BBQ",
+          "Marlowe's burger",
+          "Super Duper Burgers",
+          "Pearl's Deluxe Burgers"
+        ],
+        "Jan 2025": [
+          "Zuni Cafe",
+          "4505 Burgers & BBQ",
+          "Marlowe's burger",
+          "Super Duper Burgers",
+          "Pearl's Deluxe Burgers"
+        ],
+        "Feb 2025": [
+          "Zuni Cafe",
+          "4505 Burgers & BBQ",
+          "Marlowe's burger",
+          "Super Duper Burgers",
+          "Pearl's Deluxe Burgers"
+        ],
+        "Mar 2025": [
+          "Zuni Cafe",
+          "4505 Burgers & BBQ",
+          "Marlowe's burger",
+          "Super Duper Burgers",
+          "Pearl's Deluxe Burgers"
+        ],
+        "Apr 2025": [
+          "Zuni Cafe",
+          "4505 Burgers & BBQ",
+          "Marlowe's burger",
+          "Super Duper Burgers",
+          "Pearl's Deluxe Burgers"
+        ],
+        "May 2025": [
+          "Zuni Cafe",
+          "4505 Burgers & BBQ",
+          "Marlowe's burger",
+          "Super Duper Burgers",
+          "Pearl's Deluxe Burgers"
+        ],
+        "Jun 2025": [
+          "Zuni Cafe",
+          "4505 Burgers & BBQ",
+          "Marlowe's burger",
+          "Super Duper Burgers",
+          "Pearl's Deluxe Burgers"
+        ],
+        "Jul 2025": [
+          "Zuni Cafe",
+          "4505 Burgers & BBQ",
+          "Marlowe's burger",
+          "Super Duper Burgers",
+          "Pearl's Deluxe Burgers"
+        ]
+      }
+    }
+  },
+  {
+    "id": "ai-leader-2025",
+    "category": "Technology",
+    "question": "Which AI company will lead in 2025?",
+    "dataEnds": "Jul 2025",
+    "modelRankings": {
+      "OpenAI": {
+        "Jul 2024": [
+          "OpenAI",
+          "Google DeepMind",
+          "Anthropic",
+          "Microsoft",
+          "Meta"
+        ],
+        "Aug 2024": [
+          "OpenAI",
+          "Google DeepMind",
+          "Anthropic",
+          "Microsoft",
+          "Meta"
+        ],
+        "Sep 2024": [
+          "OpenAI",
+          "Google DeepMind",
+          "Anthropic",
+          "Microsoft",
+          "Meta"
+        ],
+        "Oct 2024": [
+          "OpenAI",
+          "Google DeepMind",
+          "Anthropic",
+          "Microsoft",
+          "Meta"
+        ],
+        "Nov 2024": [
+          "OpenAI",
+          "Google DeepMind",
+          "Anthropic",
+          "Microsoft",
+          "Meta"
+        ],
+        "Dec 2024": [
+          "OpenAI",
+          "Anthropic",
+          "Google DeepMind",
+          "Microsoft",
+          "Meta"
+        ],
+        "Jan 2025": [
+          "Anthropic",
+          "OpenAI",
+          "Google DeepMind",
+          "Microsoft",
+          "Meta"
+        ],
+        "Feb 2025": [
+          "Anthropic",
+          "OpenAI",
+          "Google DeepMind",
+          "Microsoft",
+          "Meta"
+        ],
+        "Mar 2025": [
+          "Anthropic",
+          "OpenAI",
+          "Google DeepMind",
+          "Microsoft",
+          "Meta"
+        ],
+        "Apr 2025": [
+          "Anthropic",
+          "OpenAI",
+          "Google DeepMind",
+          "Microsoft",
+          "Meta"
+        ],
+        "May 2025": [
+          "Anthropic",
+          "OpenAI",
+          "Google DeepMind",
+          "Microsoft",
+          "Meta"
+        ],
+        "Jun 2025": [
+          "Anthropic",
+          "OpenAI",
+          "Google DeepMind",
+          "Microsoft",
+          "Meta"
+        ],
+        "Jul 2025": [
+          "Anthropic",
+          "OpenAI",
+          "Google DeepMind",
+          "Microsoft",
+          "Meta"
+        ]
+      }
+    }
+  },
+  {
+    "id": "startup-langs",
+    "category": "Programming",
+    "question": "Best programming language for startups?",
+    "dataEnds": "Jul 2025",
+    "modelRankings": {
+      "OpenAI": {
+        "Jul 2024": ["JavaScript", "Python", "TypeScript", "Go", "Ruby"],
+        "Aug 2024": ["JavaScript", "Python", "TypeScript", "Go", "Ruby"],
+        "Sep 2024": ["JavaScript", "Python", "TypeScript", "Go", "Ruby"],
+        "Oct 2024": ["JavaScript", "Python", "TypeScript", "Go", "Ruby"],
+        "Nov 2024": ["JavaScript", "Python", "TypeScript", "Go", "Ruby"],
+        "Dec 2024": ["JavaScript", "Python", "TypeScript", "Go", "Ruby"],
+        "Jan 2025": ["JavaScript", "Python", "TypeScript", "Go", "Ruby"],
+        "Feb 2025": ["JavaScript", "Python", "TypeScript", "Go", "Ruby"],
+        "Mar 2025": ["JavaScript", "Python", "TypeScript", "Go", "Ruby"],
+        "Apr 2025": ["JavaScript", "Python", "TypeScript", "Go", "Ruby"],
+        "May 2025": ["JavaScript", "Python", "TypeScript", "Go", "Ruby"],
+        "Jun 2025": ["JavaScript", "Python", "TypeScript", "Go", "Ruby"],
+        "Jul 2025": ["JavaScript", "Python", "TypeScript", "Go", "Ruby"]
+      }
+    }
+  },
+  {
+    "id": "coffee-remote",
+    "category": "Lifestyle",
+    "question": "Top coffee shops for remote work?",
+    "dataEnds": "Jul 2025",
+    "modelRankings": {
+      "OpenAI": {
+        "Jul 2024": [
+          "Blue Bottle",
+          "Stumptown",
+          "Philz Coffee",
+          "Intelligentsia",
+          "Verve Coffee"
+        ],
+        "Aug 2024": [
+          "Blue Bottle",
+          "Stumptown",
+          "Philz Coffee",
+          "Intelligentsia",
+          "Verve Coffee"
+        ],
+        "Sep 2024": [
+          "Blue Bottle",
+          "Stumptown",
+          "Philz Coffee",
+          "Intelligentsia",
+          "Verve Coffee"
+        ],
+        "Oct 2024": [
+          "Blue Bottle",
+          "Stumptown",
+          "Philz Coffee",
+          "Intelligentsia",
+          "Verve Coffee"
+        ],
+        "Nov 2024": [
+          "Blue Bottle",
+          "Stumptown",
+          "Philz Coffee",
+          "Intelligentsia",
+          "Verve Coffee"
+        ],
+        "Dec 2024": [
+          "Blue Bottle",
+          "Stumptown",
+          "Philz Coffee",
+          "Intelligentsia",
+          "Verve Coffee"
+        ],
+        "Jan 2025": [
+          "Blue Bottle",
+          "Stumptown",
+          "Philz Coffee",
+          "Intelligentsia",
+          "Verve Coffee"
+        ],
+        "Feb 2025": [
+          "Blue Bottle",
+          "Stumptown",
+          "Philz Coffee",
+          "Intelligentsia",
+          "Verve Coffee"
+        ],
+        "Mar 2025": [
+          "Blue Bottle",
+          "Stumptown",
+          "Philz Coffee",
+          "Intelligentsia",
+          "Verve Coffee"
+        ],
+        "Apr 2025": [
+          "Blue Bottle",
+          "Stumptown",
+          "Philz Coffee",
+          "Intelligentsia",
+          "Verve Coffee"
+        ],
+        "May 2025": [
+          "Blue Bottle",
+          "Stumptown",
+          "Philz Coffee",
+          "Intelligentsia",
+          "Verve Coffee"
+        ],
+        "Jun 2025": [
+          "Blue Bottle",
+          "Stumptown",
+          "Philz Coffee",
+          "Intelligentsia",
+          "Verve Coffee"
+        ],
+        "Jul 2025": [
+          "Blue Bottle",
+          "Stumptown",
+          "Philz Coffee",
+          "Intelligentsia",
+          "Verve Coffee"
+        ]
+      }
+    }
+  },
+  {
+    "id": "design-tools-2025",
+    "category": "Design",
+    "question": "Best design tools for 2025?",
+    "dataEnds": "Jul 2025",
+    "modelRankings": {
+      "OpenAI": {
+        "Jul 2024": [
+          "Figma",
+          "Sketch",
+          "Adobe Creative Suite",
+          "InVision",
+          "Webflow"
+        ],
+        "Aug 2024": [
+          "Figma",
+          "Sketch",
+          "Adobe Creative Suite",
+          "InVision",
+          "Webflow"
+        ],
+        "Sep 2024": [
+          "Figma",
+          "Sketch",
+          "Adobe Creative Suite",
+          "InVision",
+          "Webflow"
+        ],
+        "Oct 2024": [
+          "Figma",
+          "Sketch",
+          "Adobe Creative Suite",
+          "InVision",
+          "Webflow"
+        ],
+        "Nov 2024": [
+          "Figma",
+          "Sketch",
+          "Adobe Creative Suite",
+          "InVision",
+          "Webflow"
+        ],
+        "Dec 2024": [
+          "Figma",
+          "Sketch",
+          "Adobe Creative Suite",
+          "InVision",
+          "Webflow"
+        ],
+        "Jan 2025": [
+          "Figma",
+          "Adobe Creative Suite",
+          "Framer",
+          "Sketch",
+          "Webflow"
+        ],
+        "Feb 2025": [
+          "Figma",
+          "Adobe Creative Suite",
+          "Framer",
+          "Sketch",
+          "Webflow"
+        ],
+        "Mar 2025": [
+          "Figma",
+          "Adobe Creative Suite",
+          "Framer",
+          "Sketch",
+          "Webflow"
+        ],
+        "Apr 2025": [
+          "Figma",
+          "Adobe Creative Suite",
+          "Framer",
+          "Sketch",
+          "Webflow"
+        ],
+        "May 2025": [
+          "Figma",
+          "Adobe Creative Suite",
+          "Framer",
+          "Sketch",
+          "Webflow"
+        ],
+        "Jun 2025": [
+          "Figma",
+          "Adobe Creative Suite",
+          "Framer",
+          "Sketch",
+          "Webflow"
+        ],
+        "Jul 2025": [
+          "Figma",
+          "Adobe Creative Suite",
+          "Framer",
+          "Sketch",
+          "Webflow"
+        ]
+      }
+    }
+  },
+  {
+    "id": "cloud-reliability",
+    "category": "Cloud Infrastructure",
+    "question": "Most reliable cloud provider?",
+    "dataEnds": "Jul 2025",
+    "modelRankings": {
+      "OpenAI": {
+        "Jul 2024": [
+          "AWS",
+          "Microsoft Azure",
+          "Google Cloud",
+          "IBM Cloud",
+          "Oracle Cloud"
+        ],
+        "Aug 2024": [
+          "AWS",
+          "Microsoft Azure",
+          "Google Cloud",
+          "IBM Cloud",
+          "Oracle Cloud"
+        ],
+        "Sep 2024": [
+          "AWS",
+          "Microsoft Azure",
+          "Google Cloud",
+          "IBM Cloud",
+          "Oracle Cloud"
+        ],
+        "Oct 2024": [
+          "AWS",
+          "Microsoft Azure",
+          "Google Cloud",
+          "IBM Cloud",
+          "Oracle Cloud"
+        ],
+        "Nov 2024": [
+          "AWS",
+          "Microsoft Azure",
+          "Google Cloud",
+          "IBM Cloud",
+          "Oracle Cloud"
+        ],
+        "Dec 2024": [
+          "AWS",
+          "Microsoft Azure",
+          "Google Cloud",
+          "IBM Cloud",
+          "Oracle Cloud"
+        ],
+        "Jan 2025": [
+          "AWS",
+          "Microsoft Azure",
+          "Google Cloud",
+          "IBM Cloud",
+          "Oracle Cloud"
+        ],
+        "Feb 2025": [
+          "AWS",
+          "Microsoft Azure",
+          "Google Cloud",
+          "IBM Cloud",
+          "Oracle Cloud"
+        ],
+        "Mar 2025": [
+          "AWS",
+          "Microsoft Azure",
+          "Google Cloud",
+          "IBM Cloud",
+          "Oracle Cloud"
+        ],
+        "Apr 2025": [
+          "AWS",
+          "Microsoft Azure",
+          "Google Cloud",
+          "IBM Cloud",
+          "Oracle Cloud"
+        ],
+        "May 2025": [
+          "AWS",
+          "Microsoft Azure",
+          "Google Cloud",
+          "IBM Cloud",
+          "Oracle Cloud"
+        ],
+        "Jun 2025": [
+          "AWS",
+          "Microsoft Azure",
+          "Google Cloud",
+          "IBM Cloud",
+          "Oracle Cloud"
+        ],
+        "Jul 2025": [
+          "AWS",
+          "Microsoft Azure",
+          "Google Cloud",
+          "IBM Cloud",
+          "Oracle Cloud"
+        ]
+      }
+    }
+  }
+]

@@ -1,0 +1,530 @@
+[
+  {
+    "id": "burger-sf",
+    "category": "Food & Dining",
+    "question": "What is the best burger in SF?",
+    "dataEnds": "Jul 2025",
+    "modelRankings": {
+      "Gemini": {
+        "Jul 2024": [
+          "Causwells",
+          "Marlowe",
+          "The Cavalier",
+          "Niku Steakhouse",
+          "Zuni Cafe"
+        ],
+        "Aug 2024": [
+          "Causwells",
+          "Marlowe",
+          "The Cavalier",
+          "Niku Steakhouse",
+          "Zuni Cafe"
+        ],
+        "Sep 2024": [
+          "Causwells",
+          "Marlowe",
+          "The Cavalier",
+          "Niku Steakhouse",
+          "Zuni Cafe"
+        ],
+        "Oct 2024": [
+          "Causwells",
+          "Marlowe",
+          "The Cavalier",
+          "Niku Steakhouse",
+          "Zuni Cafe"
+        ],
+        "Nov 2024": [
+          "Causwells",
+          "Marlowe",
+          "The Cavalier",
+          "Niku Steakhouse",
+          "Zuni Cafe"
+        ],
+        "Dec 2024": [
+          "Causwells",
+          "Marlowe",
+          "The Cavalier",
+          "Niku Steakhouse",
+          "Zuni Cafe"
+        ],
+        "Jan 2025": [
+          "Causwells",
+          "Marlowe",
+          "The Cavalier",
+          "Niku Steakhouse",
+          "Zuni Cafe"
+        ],
+        "Feb 2025": [
+          "Causwells",
+          "Marlowe",
+          "The Cavalier",
+          "Niku Steakhouse",
+          "Zuni Cafe"
+        ],
+        "Mar 2025": [
+          "Causwells",
+          "Marlowe",
+          "The Cavalier",
+          "Niku Steakhouse",
+          "Zuni Cafe"
+        ],
+        "Apr 2025": [
+          "Causwells",
+          "Marlowe",
+          "The Cavalier",
+          "Niku Steakhouse",
+          "Zuni Cafe"
+        ],
+        "May 2025": [
+          "Causwells",
+          "Marlowe",
+          "The Cavalier",
+          "Niku Steakhouse",
+          "Zuni Cafe"
+        ],
+        "Jun 2025": [
+          "Causwells",
+          "Marlowe",
+          "The Cavalier",
+          "Niku Steakhouse",
+          "Zuni Cafe"
+        ],
+        "Jul 2025": [
+          "Causwells",
+          "Marlowe",
+          "The Cavalier",
+          "Niku Steakhouse",
+          "Zuni Cafe"
+        ]
+      }
+    }
+  },
+  {
+    "id": "ai-leader-2025",
+    "category": "Technology",
+    "question": "Which AI company will lead in 2025?",
+    "dataEnds": "Jul 2025",
+    "modelRankings": {
+      "Gemini": {
+        "Jul 2024": [
+          "Nvidia",
+          "OpenAI",
+          "Google DeepMind",
+          "Microsoft",
+          "Meta"
+        ],
+        "Aug 2024": [
+          "Nvidia",
+          "OpenAI",
+          "Google DeepMind",
+          "Microsoft",
+          "Meta"
+        ],
+        "Sep 2024": [
+          "Nvidia",
+          "OpenAI",
+          "Google DeepMind",
+          "Microsoft",
+          "Meta"
+        ],
+        "Oct 2024": [
+          "Nvidia",
+          "OpenAI",
+          "Google DeepMind",
+          "Microsoft",
+          "Meta"
+        ],
+        "Nov 2024": [
+          "Nvidia",
+          "OpenAI",
+          "Google DeepMind",
+          "Microsoft",
+          "Meta"
+        ],
+        "Dec 2024": [
+          "Nvidia",
+          "OpenAI",
+          "Google DeepMind",
+          "Microsoft",
+          "Meta"
+        ],
+        "Jan 2025": [
+          "Nvidia",
+          "OpenAI",
+          "Google DeepMind",
+          "Microsoft",
+          "Meta"
+        ],
+        "Feb 2025": [
+          "Nvidia",
+          "OpenAI",
+          "Google DeepMind",
+          "Microsoft",
+          "Meta"
+        ],
+        "Mar 2025": [
+          "Nvidia",
+          "OpenAI",
+          "Google DeepMind",
+          "Microsoft",
+          "Meta"
+        ],
+        "Apr 2025": [
+          "Nvidia",
+          "OpenAI",
+          "Google DeepMind",
+          "Microsoft",
+          "Meta"
+        ],
+        "May 2025": [
+          "Nvidia",
+          "OpenAI",
+          "Google DeepMind",
+          "Microsoft",
+          "Meta"
+        ],
+        "Jun 2025": [
+          "Nvidia",
+          "OpenAI",
+          "Google DeepMind",
+          "Microsoft",
+          "Meta"
+        ],
+        "Jul 2025": [
+          "Nvidia",
+          "Google DeepMind",
+          "Microsoft",
+          "OpenAI",
+          "Anthropic"
+        ]
+      }
+    }
+  },
+  {
+    "id": "startup-langs",
+    "category": "Programming",
+    "question": "Best programming language for startups?",
+    "dataEnds": "Jul 2025",
+    "modelRankings": {
+      "Gemini": {
+        "Jul 2024": ["Python", "JavaScript", "Go", "TypeScript", "Rust"],
+        "Aug 2024": ["Python", "JavaScript", "Go", "TypeScript", "Rust"],
+        "Sep 2024": ["Python", "JavaScript", "Go", "TypeScript", "Rust"],
+        "Oct 2024": ["Python", "JavaScript", "Go", "TypeScript", "Rust"],
+        "Nov 2024": ["Python", "JavaScript", "Go", "TypeScript", "Rust"],
+        "Dec 2024": ["Python", "JavaScript", "Go", "TypeScript", "Rust"],
+        "Jan 2025": ["Python", "JavaScript", "Go", "TypeScript", "Rust"],
+        "Feb 2025": ["Python", "JavaScript", "Go", "TypeScript", "Rust"],
+        "Mar 2025": ["Python", "JavaScript", "Go", "TypeScript", "Rust"],
+        "Apr 2025": ["Python", "JavaScript", "Go", "TypeScript", "Rust"],
+        "May 2025": ["Python", "JavaScript", "Go", "TypeScript", "Rust"],
+        "Jun 2025": ["Python", "JavaScript", "Go", "TypeScript", "Rust"],
+        "Jul 2025": ["Python", "JavaScript", "Go", "TypeScript", "Rust"]
+      }
+    }
+  },
+  {
+    "id": "coffee-remote",
+    "category": "Lifestyle",
+    "question": "Top coffee shops for remote work?",
+    "dataEnds": "Jul 2025",
+    "modelRankings": {
+      "Gemini": {
+        "Jul 2024": [
+          "Stumptown Coffee Roasters",
+          "Intelligentsia Coffee",
+          "Blue Bottle Coffee",
+          "Devoción",
+          "Toby's Estate Coffee"
+        ],
+        "Aug 2024": [
+          "Stumptown Coffee Roasters",
+          "Intelligentsia Coffee",
+          "Blue Bottle Coffee",
+          "Devoción",
+          "Toby's Estate Coffee"
+        ],
+        "Sep 2024": [
+          "Stumptown Coffee Roasters",
+          "Intelligentsia Coffee",
+          "Blue Bottle Coffee",
+          "Devoción",
+          "Toby's Estate Coffee"
+        ],
+        "Oct 2024": [
+          "Stumptown Coffee Roasters",
+          "Intelligentsia Coffee",
+          "Blue Bottle Coffee",
+          "Devoción",
+          "Toby's Estate Coffee"
+        ],
+        "Nov 2024": [
+          "Stumptown Coffee Roasters",
+          "Intelligentsia Coffee",
+          "Blue Bottle Coffee",
+          "Devoción",
+          "Toby's Estate Coffee"
+        ],
+        "Dec 2024": [
+          "Stumptown Coffee Roasters",
+          "Intelligentsia Coffee",
+          "Blue Bottle Coffee",
+          "Devoción",
+          "Toby's Estate Coffee"
+        ],
+        "Jan 2025": [
+          "Stumptown Coffee Roasters",
+          "Intelligentsia Coffee",
+          "Blue Bottle Coffee",
+          "Devoción",
+          "Toby's Estate Coffee"
+        ],
+        "Feb 2025": [
+          "Stumptown Coffee Roasters",
+          "Intelligentsia Coffee",
+          "Blue Bottle Coffee",
+          "Devoción",
+          "Toby's Estate Coffee"
+        ],
+        "Mar 2025": [
+          "Stumptown Coffee Roasters",
+          "Intelligentsia Coffee",
+          "Blue Bottle Coffee",
+          "Devoción",
+          "Toby's Estate Coffee"
+        ],
+        "Apr 2025": [
+          "Stumptown Coffee Roasters",
+          "Intelligentsia Coffee",
+          "Blue Bottle Coffee",
+          "Devoción",
+          "Toby's Estate Coffee"
+        ],
+        "May 2025": [
+          "Stumptown Coffee Roasters",
+          "Intelligentsia Coffee",
+          "Blue Bottle Coffee",
+          "Devoción",
+          "Toby's Estate Coffee"
+        ],
+        "Jun 2025": [
+          "Stumptown Coffee Roasters",
+          "Intelligentsia Coffee",
+          "Blue Bottle Coffee",
+          "Devoción",
+          "Toby's Estate Coffee"
+        ],
+        "Jul 2025": [
+          "Stumptown Coffee Roasters",
+          "Intelligentsia Coffee",
+          "Blue Bottle Coffee",
+          "Devoción",
+          "Toby's Estate Coffee"
+        ]
+      }
+    }
+  },
+  {
+    "id": "design-tools-2025",
+    "category": "Design",
+    "question": "Best design tools for 2025?",
+    "dataEnds": "Jul 2025",
+    "modelRankings": {
+      "Gemini": {
+        "Jul 2024": [
+          "Figma",
+          "Adobe Creative Suite",
+          "Canva",
+          "Sketch",
+          "Framer"
+        ],
+        "Aug 2024": [
+          "Figma",
+          "Adobe Creative Suite",
+          "Canva",
+          "Sketch",
+          "Framer"
+        ],
+        "Sep 2024": [
+          "Figma",
+          "Adobe Creative Suite",
+          "Canva",
+          "Sketch",
+          "Framer"
+        ],
+        "Oct 2024": [
+          "Figma",
+          "Adobe Creative Suite",
+          "Canva",
+          "Sketch",
+          "Framer"
+        ],
+        "Nov 2024": [
+          "Figma",
+          "Adobe Creative Suite",
+          "Canva",
+          "Sketch",
+          "Framer"
+        ],
+        "Dec 2024": [
+          "Figma",
+          "Adobe Creative Suite",
+          "Canva",
+          "Sketch",
+          "Framer"
+        ],
+        "Jan 2025": [
+          "Figma",
+          "Adobe Creative Suite",
+          "Canva",
+          "Sketch",
+          "Framer"
+        ],
+        "Feb 2025": [
+          "Figma",
+          "Adobe Creative Suite",
+          "Canva",
+          "Sketch",
+          "Framer"
+        ],
+        "Mar 2025": [
+          "Figma",
+          "Adobe Creative Suite",
+          "Canva",
+          "Sketch",
+          "Framer"
+        ],
+        "Apr 2025": [
+          "Figma",
+          "Adobe Creative Suite",
+          "Canva",
+          "Sketch",
+          "Framer"
+        ],
+        "May 2025": [
+          "Figma",
+          "Adobe Creative Suite",
+          "Canva",
+          "Sketch",
+          "Framer"
+        ],
+        "Jun 2025": [
+          "Figma",
+          "Adobe Creative Suite",
+          "Canva",
+          "Sketch",
+          "Framer"
+        ],
+        "Jul 2025": [
+          "Figma",
+          "Adobe Creative Suite",
+          "Canva",
+          "Sketch",
+          "Framer"
+        ]
+      }
+    }
+  },
+  {
+    "id": "cloud-reliability",
+    "category": "Cloud Infrastructure",
+    "question": "Most reliable cloud provider?",
+    "dataEnds": "Jul 2025",
+    "modelRankings": {
+      "Gemini": {
+        "Jul 2024": [
+          "AWS",
+          "Microsoft Azure",
+          "Google Cloud",
+          "IBM Cloud",
+          "Oracle Cloud"
+        ],
+        "Aug 2024": [
+          "AWS",
+          "Microsoft Azure",
+          "Google Cloud",
+          "IBM Cloud",
+          "Oracle Cloud"
+        ],
+        "Sep 2024": [
+          "AWS",
+          "Microsoft Azure",
+          "Google Cloud",
+          "IBM Cloud",
+          "Oracle Cloud"
+        ],
+        "Oct 2024": [
+          "AWS",
+          "Microsoft Azure",
+          "Google Cloud",
+          "IBM Cloud",
+          "Oracle Cloud"
+        ],
+        "Nov 2024": [
+          "AWS",
+          "Microsoft Azure",
+          "Google Cloud",
+          "IBM Cloud",
+          "Oracle Cloud"
+        ],
+        "Dec 2024": [
+          "AWS",
+          "Microsoft Azure",
+          "Google Cloud",
+          "IBM Cloud",
+          "Oracle Cloud"
+        ],
+        "Jan 2025": [
+          "AWS",
+          "Microsoft Azure",
+          "Google Cloud",
+          "IBM Cloud",
+          "Oracle Cloud"
+        ],
+        "Feb 2025": [
+          "AWS",
+          "Microsoft Azure",
+          "Google Cloud",
+          "IBM Cloud",
+          "Oracle Cloud"
+        ],
+        "Mar 2025": [
+          "AWS",
+          "Microsoft Azure",
+          "Google Cloud",
+          "IBM Cloud",
+          "Oracle Cloud"
+        ],
+        "Apr 2025": [
+          "AWS",
+          "Microsoft Azure",
+          "Google Cloud",
+          "IBM Cloud",
+          "Oracle Cloud"
+        ],
+        "May 2025": [
+          "AWS",
+          "Microsoft Azure",
+          "Google Cloud",
+          "IBM Cloud",
+          "Oracle Cloud"
+        ],
+        "Jun 2025": [
+          "AWS",
+          "Microsoft Azure",
+          "Google Cloud",
+          "IBM Cloud",
+          "Oracle Cloud"
+        ],
+        "Jul 2025": [
+          "AWS",
+          "Microsoft Azure",
+          "Google Cloud",
+          "IBM Cloud",
+          "Oracle Cloud"
+        ]
+      }
+    }
+  }
+]
