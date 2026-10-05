@@ -87,3 +87,13 @@ a {
     scroll-behavior: auto;
   }
 }
+
+/* A small polished bead: the connected state. */
+.chrome-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 9999px;
+  background: radial-gradient(circle at 35% 30%, #f8f9fa, #9da3a8 55%, #6e7378);
+  box-shadow: 0 0 0 1px #7a8085;
+}

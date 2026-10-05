@@ -11,6 +11,7 @@ export const site = {
   author: { name: "Bassey Duke", url: "https://basseyduke.io" },
   skip: "Skip to content",
   github: "GitHub",
+  askNav: "Ask",
 };
 
 export const home = {
@@ -25,6 +26,7 @@ export const home = {
   listSeparator: ", ",
   allFourSay: (name: string) => `All four say ${name}`,
   seeRanking: "See the full ranking",
+  askYourOwn: "Ask your own question",
 };
 
 export const method = {
@@ -93,15 +95,97 @@ export const notFound = {
   action: "See all questions",
 };
 
+export const ask = {
+  title: "Ask your own",
+  description: "Ask any AI models the same question with your own OpenRouter account or API keys, and see where they agree.",
+  heading: "Ask your own question.",
+  intro: "Pick two to six models, ask one question, and see where their rankings line up. It runs on your own OpenRouter credit or API keys.",
+  questionLabel: "Your question",
+  questionHint: (max: number) => `Something with more than one good answer, like best pizza in New York. Up to ${max} characters.`,
+  lengthLegend: "How many each",
+  lengthOption: (n: number) => `Top ${n}`,
+
+  connectHeading: "Connect",
+  connectButton: "Connect OpenRouter",
+  connecting: "Connecting",
+  connected: "Connected to OpenRouter.",
+  disconnect: "Disconnect",
+  disconnected: "Disconnected. The key is gone from this page.",
+  connectBody:
+    "One click. OpenRouter gives this page a key that only lives in this tab and only goes back to OpenRouter. Gallop’s server never sees it, nothing is saved, and it’s gone when you reload.",
+  connectNote:
+    "Each connection adds a key named Gallop to your OpenRouter account. Delete old ones there any time, or set a credit limit when you connect.",
+  connectFailed: "OpenRouter didn’t finish connecting. Try again.",
+  connectExpired: "That connection link expired or came from somewhere else. Connect again.",
+  privacyLink: "Read how keys are used",
+  privacyHref: "https://github.com/Basseybd/gallop-ai/blob/main/lib/ask.ts",
+
+  modeKeys: "Use your own provider keys instead",
+  modeOpenRouter: "Use OpenRouter instead",
+  keysHeading: "Your API keys",
+  keysBody:
+    "Each key goes straight from this browser to its own provider. Gallop’s server never sees them, nothing is saved, and they’re gone when you reload.",
+  keyLabel: (provider: string) => `${provider} API key`,
+  keyHint: "Leave blank to skip. Each answer is capped at a few hundred tokens on your account.",
+  clearKeys: "Clear keys",
+  cleared: "Keys cleared.",
+  providerModelsSummary: "Model names",
+  providerModelLabel: (provider: string) => `${provider} model`,
+  providerModelHint: "Change these if a provider renames its models.",
+
+  lanesHeading: "Models",
+  lanesHint: (min: number, max: number) => `Compare ${min} to ${max}. Any model on OpenRouter works, even two from the same company.`,
+  removeLane: (label: string) => `Remove ${label}`,
+  addModel: "Add a model",
+  pickerLabel: "Search models",
+  pickerHint: "Try a company or a model, like claude, gpt or llama.",
+  pickerLoading: "Loading OpenRouter’s models",
+  pickerFailed: "Couldn’t load the model list. Type a model id instead, like mistralai/mistral-small.",
+  pickerEmpty: "No models match. Try a shorter search.",
+  pickerUseId: (id: string) => `Use ${id}`,
+  pickerPrice: (out: number | null) => (out === null ? "" : out === 0 ? "free" : `$${out} per 1M out`),
+  pickerClose: "Done",
+  lanesFull: (max: number) => `That’s ${max}, the most this page compares at once.`,
+
+  submit: "Ask",
+  asking: "Asking",
+  needConnection: "Connect OpenRouter first, or switch to your own keys.",
+  needTwo: (min: number) => `Pick at least ${min} models to compare.`,
+  needTwoKeys: "Add keys for at least two providers to compare them.",
+  badQuestion: (max: number) => `Ask something between 3 and ${max} characters.`,
+  badKey: (provider: string) => `That ${provider} key has spaces or odd characters. Paste it again.`,
+  badModel: (label: string) => `The model name for ${label} can only use letters, numbers, dots, dashes, slashes and colons.`,
+
+  waiting: "Waiting",
+  gridHeading: "Every pick",
+  gridCaption: "Each model’s rank for everything any of them listed. A blank means that model left it out.",
+  onlyOne: "Only one model answered, so there’s nothing to compare. Fix the others and ask again.",
+  errors: {
+    key: (m: string) => `${m}: the key was rejected. Reconnect or check it, then try again.`,
+    model: (m: string) => `${m}: that model wasn’t found. Swap it for another and try again.`,
+    limit: (m: string) => `${m}: out of credit or rate limited. Wait a minute or top up, then try again.`,
+    network: (m: string) =>
+      m === "Perplexity"
+        ? "Couldn’t reach Perplexity from the browser. Its API may not allow direct browser calls. Use OpenRouter for Perplexity instead."
+        : `Couldn’t reach ${m}. Check your connection and try again.`,
+    timeout: (m: string) => `${m} took longer than 45 seconds. Try again or pick a faster model.`,
+    unreadable: (m: string) => `${m} answered, but not with a numbered list. Try rewording the question.`,
+    provider: (m: string) => `${m} had a problem on its end. Try again in a moment.`,
+  },
+};
+
 /** Sentence parts for the summaries in lib/analysis.ts, which stays pure and takes these as an argument. */
 export const summaryCopy = {
-  numbers: ["No", "One", "Two", "Three", "Four", "Five"],
+  numbers: ["No", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten"],
+  totals: ["none", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"],
   and: " and ",
-  allFour: (name: string) => `${name} is #1 for all four.`,
-  allDifferent: "Four different #1 picks.",
+  allAgree: (name: string, total: number, totalWord: string) =>
+    total === 2 ? `${name} is #1 for both.` : `${name} is #1 for all ${totalWord}.`,
+  allDifferent: (countWord: string) => `${countWord} different #1 picks.`,
   says: (models: string, name: string, plural: boolean) => `${models} ${plural ? "say" : "says"} ${name}`,
-  majority: (count: string, name: string) => `${count} of four put ${name} first.`,
-  sameFive: "All four give the same five.",
+  majority: (count: string, name: string, totalWord: string) => `${count} of ${totalWord} put ${name} first.`,
+  sameList: (total: number, totalWord: string, lengthWord: string) =>
+    total === 2 ? `Both give the same ${lengthWord}.` : `All ${totalWord} give the same ${lengthWord}.`,
   noneShared: "Nothing makes every list.",
   shared: (count: string, n: number) => `${count} ${n === 1 ? "makes" : "make"} every list.`,
   across: (picks: number, distinct: number) => `Across ${picks} picks, ${distinct} different names.`,

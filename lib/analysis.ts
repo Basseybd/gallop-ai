@@ -14,12 +14,24 @@ export type Question = {
 
 export type RankRow = {
   name: string;
-  ranks: Record<Model, number | null>;
+  /** Rank per label (a model name or a live lane), null when that one left it out. */
+  ranks: Record<string, number | null>;
   /** How many models list this item. */
   count: number;
 };
 
 export type Aliases = Record<string, string>;
+
+/**
+ * Ranked lists by label. Saved questions use the four model names; live questions use whatever
+ * models the visitor picked. Insertion order is display order. Missing or empty lists are ignored.
+ */
+export type Lists = Record<string, string[] | undefined>;
+
+/** The labels that actually answered, in display order. */
+export function present(latest: Lists): string[] {
+  return Object.keys(latest).filter((m) => (latest[m]?.length ?? 0) > 0);
+}
 
 /** Map spelling variants to one display name, then compare case-insensitively. */
 export function canonical(name: string, aliases: Aliases): string {
@@ -53,8 +65,8 @@ export function latestLists(q: Question, aliases: Aliases): Record<Model, string
 }
 
 /** Mean pairwise overlap of the models' latest top 5 sets, from 0 (none shared) to 1 (same five). */
-export function agreement(latest: Record<Model, string[]>): number {
-  const sets = MODELS.map((m) => new Set(latest[m].map(key)));
+export function agreement(latest: Lists): number {
+  const sets = present(latest).map((m) => new Set(latest[m]!.map(key)));
   let total = 0;
   let pairs = 0;
   for (let i = 0; i < sets.length; i++) {
@@ -71,18 +83,15 @@ export function agreement(latest: Record<Model, string[]>): number {
 }
 
 /** Every item any model listed, with each model's rank. Most shared first, then best average rank. */
-export function rankGrid(latest: Record<Model, string[]>): RankRow[] {
+export function rankGrid(latest: Lists): RankRow[] {
   const rows = new Map<string, RankRow>();
-  for (const m of MODELS) {
-    latest[m].forEach((name, i) => {
+  const labels = present(latest);
+  for (const m of labels) {
+    latest[m]!.forEach((name, i) => {
       const k = key(name);
       let row = rows.get(k);
       if (!row) {
-        row = {
-          name,
-          ranks: { OpenAI: null, Claude: null, Gemini: null, Perplexity: null },
-          count: 0,
-        };
+        row = { name, ranks: Object.fromEntries(labels.map((l) => [l, null])), count: 0 };
         rows.set(k, row);
       }
       if (row.ranks[m] === null) {
@@ -92,7 +101,7 @@ export function rankGrid(latest: Record<Model, string[]>): RankRow[] {
     });
   }
   const avg = (r: RankRow) => {
-    const ranks = MODELS.map((m) => r.ranks[m]).filter((x): x is number => x !== null);
+    const ranks = labels.map((m) => r.ranks[m]).filter((x): x is number => x !== null);
     return ranks.reduce((s, x) => s + x, 0) / ranks.length;
   };
   return [...rows.values()].sort((a, b) => b.count - a.count || avg(a) - avg(b) || a.name.localeCompare(b.name));
@@ -105,28 +114,35 @@ export function changeMonths(lists: string[][], aliases: Aliases): boolean[] {
 }
 
 export type Summary = {
+  /** The labels that answered. */
+  models: string[];
+  /** Length of the longest list (5 for saved questions; 3, 5 or 10 live). */
+  length: number;
   distinct: number;
   picks: number;
   onEveryList: string[];
   /** #1 pick and the models that chose it, most popular first. */
-  topPicks: { name: string; models: Model[] }[];
+  topPicks: { name: string; models: string[] }[];
   agreement: number;
 };
 
-export function summarize(latest: Record<Model, string[]>): Summary {
+export function summarize(latest: Lists): Summary {
+  const models = present(latest);
   const grid = rankGrid(latest);
-  const tops = new Map<string, { name: string; models: Model[] }>();
-  for (const m of MODELS) {
-    const name = latest[m][0];
+  const tops = new Map<string, { name: string; models: string[] }>();
+  for (const m of models) {
+    const name = latest[m]![0];
     const k = key(name);
     const entry = tops.get(k) ?? { name, models: [] };
     entry.models.push(m);
     tops.set(k, entry);
   }
   return {
+    models,
+    length: Math.max(0, ...models.map((m) => latest[m]!.length)),
     distinct: grid.length,
-    picks: MODELS.reduce((s, m) => s + latest[m].length, 0),
-    onEveryList: grid.filter((r) => r.count === MODELS.length).map((r) => r.name),
+    picks: models.reduce((s, m) => s + latest[m]!.length, 0),
+    onEveryList: grid.filter((r) => r.count === models.length).map((r) => r.name),
     topPicks: [...tops.values()].sort((a, b) => b.models.length - a.models.length),
     agreement: agreement(latest),
   };
@@ -134,13 +150,16 @@ export function summarize(latest: Record<Model, string[]>): Summary {
 
 /** The words the summary sentences are built from. The site passes `summaryCopy` from content.ts. */
 export type SummaryCopy = {
+  /** Capitalized number words, indexed by value. */
   numbers: string[];
+  /** Lowercase number words, indexed by value. */
+  totals: string[];
   and: string;
-  allFour: (name: string) => string;
-  allDifferent: string;
+  allAgree: (name: string, total: number, totalWord: string) => string;
+  allDifferent: (countWord: string) => string;
   says: (models: string, name: string, plural: boolean) => string;
-  majority: (count: string, name: string) => string;
-  sameFive: string;
+  majority: (count: string, name: string, totalWord: string) => string;
+  sameList: (total: number, totalWord: string, lengthWord: string) => string;
   noneShared: string;
   shared: (count: string, n: number) => string;
   across: (picks: number, distinct: number) => string;
@@ -151,18 +170,23 @@ const join = (models: string[], and: string) =>
 
 /** One plain sentence about who agrees on #1. */
 export function topPickSentence(s: Summary, c: SummaryCopy): string {
+  const total = s.models.length;
+  const totalWord = c.totals[total] ?? String(total);
   const [first, ...rest] = s.topPicks;
-  if (rest.length === 0) return c.allFour(first.name);
-  if (first.models.length === 1) return c.allDifferent;
+  if (rest.length === 0) return c.allAgree(first.name, total, totalWord);
+  if (first.models.length === 1) return c.allDifferent(c.numbers[total] ?? String(total));
   const says = (t: { name: string; models: string[] }) => c.says(join(t.models, c.and), t.name, t.models.length > 1);
   if (rest[0].models.length === first.models.length) return `${s.topPicks.map(says).join(". ")}.`;
   const count = c.numbers[first.models.length] ?? String(first.models.length);
-  return `${c.majority(count, first.name)} ${rest.map(says).join(". ")}.`;
+  return `${c.majority(count, first.name, totalWord)} ${rest.map(says).join(". ")}.`;
 }
 
 /** One plain sentence about overlap across the full top 5s. */
 export function overlapSentence(s: Summary, c: SummaryCopy): string {
-  if (s.distinct === 5 && s.onEveryList.length === 5) return c.sameFive;
+  const total = s.models.length;
+  if (s.distinct === s.length && s.onEveryList.length === s.length) {
+    return c.sameList(total, c.totals[total] ?? String(total), c.totals[s.length] ?? String(s.length));
+  }
   const n = s.onEveryList.length;
   const shared = n === 0 ? c.noneShared : c.shared(c.numbers[n] ?? String(n), n);
   return `${c.across(s.picks, s.distinct)} ${shared}`;

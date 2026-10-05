@@ -30,12 +30,15 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <Link href="/" className="font-display -ml-1 inline-flex min-h-11 items-center px-1 text-xl tracking-tight">
             {site.name}
           </Link>
-          <a
-            href={site.repo}
-            className="-mr-2 inline-flex min-h-11 items-center px-2 text-sm text-secondary hover:text-ink"
-          >
-            {site.github}
-          </a>
+          <nav aria-label="Site" className="-mr-2 flex items-center">
+            {/* A full page load, so /ask always gets its own document and headers. */}
+            <a href="/ask" className="inline-flex min-h-11 items-center px-2 text-sm text-secondary hover:text-ink">
+              {site.askNav}
+            </a>
+            <a href={site.repo} className="inline-flex min-h-11 items-center px-2 text-sm text-secondary hover:text-ink">
+              {site.github}
+            </a>
+          </nav>
         </header>
         <main id="main">{children}</main>
         <footer className="mx-auto mt-24 max-w-5xl px-5 sm:px-8">
