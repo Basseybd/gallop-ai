@@ -14,6 +14,9 @@ Each lesson is a rule for the next round. Format: rule, why, lane, where caught,
 - **The reduced-motion block turns off every transition, not just the authored animation.** Why: hover and chevron transitions kept moving. Lane: mobile and accessibility. Caught: gallop-ai council, Oct 5 2026. Count: 1.
 - **Every link in the README exists before the PR.** Commit the screenshot, and add the live link only after the first deploy. Why: a broken image and an unverified link on GitHub. Lane: copy. Caught: gallop-ai council, Oct 5 2026. Count: 1.
 
+- **Run the gates on a clean checkout before calling CI green.** Typecheck runs `next typegen` first, because `PageProps` comes from generated types that only exist after a build. Why: it passed locally on a stale `.next` and would have failed in CI. Lane: build. Caught: gallop-ai verifier, Oct 5 2026. Count: 1.
+- **A page's `openGraph` or `twitter` metadata replaces the root block, so it repeats the image, url and site name.** Check the rendered meta tags after any metadata change. Why: question pages lost their preview image. Lane: copy, build. Caught: gallop-ai verifier, Oct 5 2026. Count: 1.
+
 ## Accepted exceptions
 - CSP uses `'unsafe-inline'` for scripts instead of a nonce, because nonces force per-request rendering on a fully static site with no user input or third-party scripts. Revisit if any user input or third-party script is added.
 - Dev-only `braces` advisory (via eslint-config-next) has no patched release. CI audits production dependencies only. Remove this once Dependabot brings a fix.

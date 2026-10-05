@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AgreementMeter } from "@/components/agreement";
-import { aliases, question as copy, summaryCopy } from "@/content";
+import { aliases, question as copy, site, summaryCopy } from "@/content";
 import { canonical, diffLists, overlapSentence, topPickSentence } from "@/lib/analysis";
 import { MODELS, getQuestion, getQuestions } from "@/lib/snapshots";
 
@@ -17,7 +17,15 @@ export async function generateMetadata(props: PageProps<"/q/[id]">): Promise<Met
   const q = getQuestion(id);
   if (!q) return {};
   const description = `${topPickSentence(q.summary, summaryCopy)} ${overlapSentence(q.summary, summaryCopy)}`;
-  return { title: q.question, description, openGraph: { title: q.question, description } };
+  // Setting openGraph here replaces the root block, so carry the shared fields and the site image along.
+  const title = `${q.question} | ${site.name}`;
+  const images = [{ url: "/opengraph-image", width: 1200, height: 630, alt: site.title }];
+  return {
+    title: q.question,
+    description,
+    openGraph: { title, description, url: `/q/${q.id}`, siteName: site.name, type: "article", images },
+    twitter: { card: "summary_large_image", title, description, images },
+  };
 }
 
 export default async function QuestionPage(props: PageProps<"/q/[id]">) {

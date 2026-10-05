@@ -59,7 +59,7 @@ export const question = {
   back: "All questions",
   gridHeading: "Every pick",
   gridCaption: (month: string) => ({
-    text: "Each model’s rank for everything any of them listed. A blank means that model left it out. As of ",
+    text: "Each model’s rank for everything any of them listed. A blank means that model left it out. From the list labeled ",
     month,
   }),
   pickColumn: "Pick",
@@ -78,7 +78,7 @@ export const question = {
   showChanges: "Show each change",
   showChangesFor: (model: string) => ` for ${model}`,
   dropped: "Dropped",
-  newLabel: "New this month",
+  newLabel: "New",
   listSeparator: ", ",
   labelSeparator: ":",
   moreQuestions: "More questions",
