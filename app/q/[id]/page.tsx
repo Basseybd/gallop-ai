@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AgreementMeter } from "@/components/agreement";
-import { aliases, question as copy } from "@/content";
+import { aliases, question as copy, summaryCopy } from "@/content";
 import { canonical, diffLists, overlapSentence, topPickSentence } from "@/lib/analysis";
 import { MODELS, getQuestion, getQuestions } from "@/lib/snapshots";
 
@@ -16,7 +16,8 @@ export async function generateMetadata(props: PageProps<"/q/[id]">): Promise<Met
   const { id } = await props.params;
   const q = getQuestion(id);
   if (!q) return {};
-  return { title: q.question, description: `${topPickSentence(q.summary)} ${overlapSentence(q.summary)}` };
+  const description = `${topPickSentence(q.summary, summaryCopy)} ${overlapSentence(q.summary, summaryCopy)}`;
+  return { title: q.question, description, openGraph: { title: q.question, description } };
 }
 
 export default async function QuestionPage(props: PageProps<"/q/[id]">) {
@@ -46,7 +47,7 @@ export default async function QuestionPage(props: PageProps<"/q/[id]">) {
           {q.question}
         </h1>
         <p className="mt-6 max-w-[60ch] text-lg leading-relaxed text-secondary">
-          {topPickSentence(q.summary)} {overlapSentence(q.summary)}
+          {topPickSentence(q.summary, summaryCopy)} {overlapSentence(q.summary, summaryCopy)}
         </p>
         <div className="mt-6 max-w-md">
           <AgreementMeter value={q.summary.agreement} />
@@ -61,7 +62,7 @@ export default async function QuestionPage(props: PageProps<"/q/[id]">) {
           {copy.gridCaption(last).text}
           <span className="font-mono">{last}</span>.
         </p>
-        <table className="mt-6 w-full border-collapse text-left">
+        <table aria-labelledby="grid" className="mt-6 w-full border-collapse text-left">
           <thead>
             <tr className="border-b border-ink text-sm text-secondary">
               <th scope="col" className="py-3 pr-2 font-normal">
@@ -82,12 +83,12 @@ export default async function QuestionPage(props: PageProps<"/q/[id]">) {
               <tr key={row.name} className="border-b border-hairline">
                 <th
                   scope="row"
-                  className={`py-3 pr-2 font-normal leading-snug ${row.count === MODELS.length ? "font-display text-lg" : row.count === 1 ? "text-secondary" : ""}`}
+                  className={`py-3 pr-2 align-baseline font-normal leading-snug ${row.count === MODELS.length ? "font-display text-lg" : row.count === 1 ? "text-secondary" : ""}`}
                 >
                   {row.name}
                 </th>
                 {MODELS.map((m) => (
-                  <td key={m} className="py-3 text-center font-mono text-sm">
+                  <td key={m} className="py-3 text-center align-baseline font-mono text-sm">
                     {row.ranks[m] ?? <span className="sr-only">{copy.notListed}</span>}
                   </td>
                 ))}
@@ -119,13 +120,11 @@ export default async function QuestionPage(props: PageProps<"/q/[id]">) {
                   {count === 0 ? copy.never : copy.changed(count)}
                 </p>
                 <div className="col-span-2 sm:col-span-1">
-                  <div className="flex h-5 items-end gap-[3px]" aria-hidden="true">
+                  <div className="flex h-3 items-end border-b border-hairline" aria-hidden="true">
                     {changes.map((c, i) => (
-                      <span
-                        key={q.months[i]}
-                        title={q.months[i]}
-                        className={`flex-1 ${c ? "h-5 bg-graphite" : "h-1.5 bg-hairline"}`}
-                      />
+                      <span key={q.months[i]} title={q.months[i]} className="flex flex-1 justify-center">
+                        {c && <span className="block h-3 w-0.5 bg-graphite" />}
+                      </span>
                     ))}
                   </div>
                   {row === MODELS.length - 1 && (
@@ -149,7 +148,7 @@ export default async function QuestionPage(props: PageProps<"/q/[id]">) {
                         <path d="M4.5 2.5 8 6l-3.5 3.5" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" />
                       </svg>
                       {copy.showChanges}
-                      <span className="sr-only"> for {m}</span>
+                      <span className="sr-only">{copy.showChangesFor(m)}</span>
                     </summary>
                     <ol className="mt-2 space-y-3 border-l border-hairline pl-4">
                       {changes.map((c, i) =>
@@ -157,7 +156,7 @@ export default async function QuestionPage(props: PageProps<"/q/[id]">) {
                           <li key={q.months[i]} className="text-sm">
                             <span className="font-mono text-secondary">{q.months[i]}</span>
                             <p className="mt-1 leading-relaxed">
-                              {q.lists[m][i].map((n) => canonical(n, aliases)).join(", ")}
+                              {q.lists[m][i].map((n) => canonical(n, aliases)).join(copy.listSeparator)}
                             </p>
                             <ChangeNote prev={q.lists[m][i - 1]} next={q.lists[m][i]} />
                           </li>
@@ -176,7 +175,7 @@ export default async function QuestionPage(props: PageProps<"/q/[id]">) {
         {prev ? (
           <Link href={`/q/${prev.id}`} className="group block min-h-11 py-2">
             <span className="text-sm text-secondary">{copy.previous}</span>
-            <span className="font-display mt-1 block text-lg group-hover:text-secondary">{prev.question}</span>
+            <span className="font-display mt-1 block text-lg underline decoration-transparent decoration-1 underline-offset-[0.2em] transition-colors duration-300 group-hover:decoration-ink">{prev.question}</span>
           </Link>
         ) : (
           <span />
@@ -184,7 +183,7 @@ export default async function QuestionPage(props: PageProps<"/q/[id]">) {
         {next && (
           <Link href={`/q/${next.id}`} className="group block min-h-11 py-2 sm:text-right">
             <span className="text-sm text-secondary">{copy.next}</span>
-            <span className="font-display mt-1 block text-lg group-hover:text-secondary">{next.question}</span>
+            <span className="font-display mt-1 block text-lg underline decoration-transparent decoration-1 underline-offset-[0.2em] transition-colors duration-300 group-hover:decoration-ink">{next.question}</span>
           </Link>
         )}
       </nav>
@@ -201,14 +200,14 @@ function ChangeNote({ prev, next }: { prev?: string[]; next: string[] }) {
     <dl className="mt-1 space-y-0.5 text-secondary">
       {added.length > 0 && (
         <div className="flex gap-2">
-          <dt>{copy.newLabel}:</dt>
-          <dd>{added.join(", ")}</dd>
+          <dt>{copy.newLabel}{copy.labelSeparator}</dt>
+          <dd>{added.join(copy.listSeparator)}</dd>
         </div>
       )}
       {dropped.length > 0 && (
         <div className="flex gap-2">
-          <dt>{copy.dropped}:</dt>
-          <dd>{dropped.join(", ")}</dd>
+          <dt>{copy.dropped}{copy.labelSeparator}</dt>
+          <dd>{dropped.join(copy.listSeparator)}</dd>
         </div>
       )}
     </dl>

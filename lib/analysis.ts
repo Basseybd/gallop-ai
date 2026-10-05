@@ -132,28 +132,38 @@ export function summarize(latest: Record<Model, string[]>): Summary {
   };
 }
 
-const NUMBER_WORDS = ["No", "One", "Two", "Three", "Four", "Five"];
+/** The words the summary sentences are built from. The site passes `summaryCopy` from content.ts. */
+export type SummaryCopy = {
+  numbers: string[];
+  and: string;
+  allFour: (name: string) => string;
+  allDifferent: string;
+  says: (models: string, name: string, plural: boolean) => string;
+  majority: (count: string, name: string) => string;
+  sameFive: string;
+  noneShared: string;
+  shared: (count: string, n: number) => string;
+  across: (picks: number, distinct: number) => string;
+};
 
-const join = (models: string[]) =>
-  models.length <= 2 ? models.join(" and ") : `${models.slice(0, -1).join(", ")} and ${models.at(-1)}`;
+const join = (models: string[], and: string) =>
+  models.length <= 2 ? models.join(and) : `${models.slice(0, -1).join(", ")}${and}${models.at(-1)}`;
 
 /** One plain sentence about who agrees on #1. */
-export function topPickSentence(s: Summary): string {
+export function topPickSentence(s: Summary, c: SummaryCopy): string {
   const [first, ...rest] = s.topPicks;
-  if (rest.length === 0) return `${first.name} is #1 for all four.`;
-  if (first.models.length === 1) return "Four different #1 picks.";
-  if (rest[0].models.length === first.models.length) {
-    return `${s.topPicks.map((t) => `${join(t.models)} say ${t.name}`).join(". ")}.`;
-  }
-  const count = NUMBER_WORDS[first.models.length] ?? String(first.models.length);
-  const others = rest.map((r) => `${join(r.models)} ${r.models.length > 1 ? "say" : "says"} ${r.name}`);
-  return `${count} of four put ${first.name} first. ${others.join(". ")}.`;
+  if (rest.length === 0) return c.allFour(first.name);
+  if (first.models.length === 1) return c.allDifferent;
+  const says = (t: { name: string; models: string[] }) => c.says(join(t.models, c.and), t.name, t.models.length > 1);
+  if (rest[0].models.length === first.models.length) return `${s.topPicks.map(says).join(". ")}.`;
+  const count = c.numbers[first.models.length] ?? String(first.models.length);
+  return `${c.majority(count, first.name)} ${rest.map(says).join(". ")}.`;
 }
 
 /** One plain sentence about overlap across the full top 5s. */
-export function overlapSentence(s: Summary): string {
-  if (s.distinct === 5 && s.onEveryList.length === 5) return "All four give the same five.";
+export function overlapSentence(s: Summary, c: SummaryCopy): string {
+  if (s.distinct === 5 && s.onEveryList.length === 5) return c.sameFive;
   const n = s.onEveryList.length;
-  const shared = n === 0 ? "Nothing makes every list." : `${NUMBER_WORDS[n] ?? n} ${n === 1 ? "makes" : "make"} every list.`;
-  return `Across ${s.picks} picks, ${s.distinct} different names. ${shared}`;
+  const shared = n === 0 ? c.noneShared : c.shared(c.numbers[n] ?? String(n), n);
+  return `${c.across(s.picks, s.distinct)} ${shared}`;
 }

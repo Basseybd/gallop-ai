@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { AgreementMeter } from "@/components/agreement";
-import { home, method } from "@/content";
+import { home, method, summaryCopy } from "@/content";
 import { overlapSentence } from "@/lib/analysis";
 import { MODELS, getQuestions, getRange } from "@/lib/snapshots";
 
@@ -12,15 +12,14 @@ export default function HomePage() {
 
   return (
     <div className="mx-auto max-w-5xl px-5 sm:px-8">
-      <section className="pt-14 sm:pt-16">
+      <section className="pt-8 sm:pt-16">
         <h1 className="font-display max-w-[17ch] text-[clamp(2.75rem,8vw,4.75rem)] leading-[1.02] font-medium tracking-[-0.025em]">
           {home.heading}
         </h1>
-        <p className="font-display mt-4 text-[clamp(1.5rem,4vw,2.25rem)] text-secondary">{home.subheading}</p>
-        <p className="mt-6 max-w-[58ch] text-base leading-relaxed text-secondary sm:text-lg">{home.intro}</p>
+        <p className="font-display mt-3 text-[clamp(1.5rem,4vw,2.25rem)] leading-tight text-secondary">{home.subheading}</p>
       </section>
 
-      <section aria-labelledby="lead-question" className="mt-16 sm:mt-20">
+      <section aria-labelledby="lead-question" className="mt-10 sm:mt-16">
         <h2 id="lead-question" className="font-display text-[clamp(1.6rem,4.5vw,2.5rem)] leading-tight tracking-[-0.01em]">
           {lead.question}
         </h2>
@@ -43,11 +42,15 @@ export default function HomePage() {
           ))}
         </ol>
         <div className="flex flex-col gap-1 border-t border-hairline pt-5 sm:flex-row sm:items-baseline sm:justify-between">
-          <p className="text-secondary">{overlapSentence(lead.summary)}</p>
-          <Link href={`/q/${lead.id}`} className="-ml-1 inline-flex min-h-11 items-center px-1 underline hover:text-secondary">
+          <p className="text-secondary">{overlapSentence(lead.summary, summaryCopy)}</p>
+          <Link
+            href={`/q/${lead.id}`}
+            className="-ml-1 inline-flex min-h-11 items-center px-1 underline decoration-hairline transition-colors duration-300 hover:decoration-ink"
+          >
             {home.seeRanking}
           </Link>
         </div>
+        <p className="mt-10 max-w-[58ch] text-base leading-relaxed text-secondary sm:text-lg">{home.intro}</p>
       </section>
 
       <section aria-labelledby="all-questions" className="mt-24 sm:mt-32">
@@ -62,17 +65,17 @@ export default function HomePage() {
                 className="group grid gap-3 py-6 sm:grid-cols-[1fr_18rem] sm:items-center sm:gap-10"
               >
                 <div>
-                  <p className="font-display text-xl leading-snug transition-colors duration-300 group-hover:text-secondary sm:text-2xl">
+                  <p className="font-display text-xl leading-snug underline decoration-transparent decoration-1 underline-offset-[0.2em] transition-colors duration-300 group-hover:decoration-ink sm:text-2xl">
                     {q.question}
                   </p>
                   <p className="mt-2 text-sm text-secondary">
                     <span className="sr-only">{home.topPicksLabel}: </span>
                     {q.summary.topPicks.length === 1
                       ? home.allFourSay(q.summary.topPicks[0].name)
-                      : q.summary.topPicks.map((t) => t.name).join(", ")}
+                      : q.summary.topPicks.map((t) => t.name).join(home.listSeparator)}
                   </p>
                 </div>
-                <AgreementMeter value={q.summary.agreement} />
+                <AgreementMeter value={q.summary.agreement} decorative />
               </Link>
             </li>
           ))}

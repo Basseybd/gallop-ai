@@ -1,5 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { summaryCopy as c } from "../content.ts";
 import { agreement, canonical, changeMonths, diffLists, overlapSentence, rankGrid, summarize, topPickSentence } from "./analysis.ts";
 
 const same = ["AWS", "Azure", "GCP", "IBM", "Oracle"];
@@ -9,8 +10,8 @@ test("identical lists agree completely", () => {
   assert.equal(agreement(latest), 1);
   const s = summarize(latest);
   assert.equal(s.distinct, 5);
-  assert.equal(overlapSentence(s), "All four give the same five.");
-  assert.equal(topPickSentence(s), "AWS is #1 for all four.");
+  assert.equal(overlapSentence(s, c), "All four give the same five.");
+  assert.equal(topPickSentence(s, c), "AWS is #1 for all four.");
 });
 
 test("disjoint lists agree not at all", () => {
@@ -22,8 +23,8 @@ test("disjoint lists agree not at all", () => {
   };
   assert.equal(agreement(latest), 0);
   const s = summarize(latest);
-  assert.equal(overlapSentence(s), "Across 20 picks, 20 different names. Nothing makes every list.");
-  assert.equal(topPickSentence(s), "Four different #1 picks.");
+  assert.equal(overlapSentence(s, c), "Across 20 picks, 20 different names. Nothing makes every list.");
+  assert.equal(topPickSentence(s, c), "Four different #1 picks.");
 });
 
 test("hand count: one item swapped in one model", () => {
@@ -36,7 +37,7 @@ test("hand count: one item swapped in one model", () => {
   assert.equal(grid[0].name, "AWS");
   assert.equal(grid.at(-1)?.name, "DigitalOcean");
   assert.deepEqual(grid.at(-1)?.ranks, { OpenAI: 5, Claude: null, Gemini: null, Perplexity: null });
-  assert.equal(overlapSentence(summarize(latest)), "Across 20 picks, 6 different names. Four make every list.");
+  assert.equal(overlapSentence(summarize(latest), c), "Across 20 picks, 6 different names. Four make every list.");
 });
 
 test("split #1 reads naturally", () => {
@@ -46,7 +47,7 @@ test("split #1 reads naturally", () => {
     Gemini: ["Nvidia", "x", "y", "z", "w"],
     Perplexity: ["Anthropic", "x", "y", "z", "w"],
   };
-  assert.equal(topPickSentence(summarize(latest)), "Three of four put Anthropic first. Gemini says Nvidia.");
+  assert.equal(topPickSentence(summarize(latest), c), "Three of four put Anthropic first. Gemini says Nvidia.");
 });
 
 test("aliases merge spelling variants and case", () => {
@@ -62,7 +63,7 @@ test("an even split names both sides", () => {
     Gemini: ["B", "x", "y", "z", "w"],
     Perplexity: ["A", "x", "y", "z", "w"],
   };
-  assert.equal(topPickSentence(summarize(latest)), "OpenAI and Perplexity say A. Claude and Gemini say B.");
+  assert.equal(topPickSentence(summarize(latest), c), "OpenAI and Perplexity say A. Claude and Gemini say B.");
 });
 
 test("diff reports what came in and what fell out, with curly apostrophes", () => {

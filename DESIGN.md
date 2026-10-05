@@ -10,27 +10,26 @@ Bassey Duke's silver and chrome system: a calm, pale room with one polished chro
 | raised | #EFF0EE | skip link, selection text |
 | ink | #141516 | text |
 | secondary | #585B5E | supporting text |
-| hairline | #C5C7C8 | rules, unchanged ticks |
+| hairline | #C5C7C8 | rules, meter track, tick baseline |
 | graphite | #17181A | meter fill, changed ticks, focus ring |
-| aluminum | #D4D7DA | meter track |
 | chrome | gradient | the one rule under the lead question |
 
 ## Type
 
 - Display: Shippori Mincho 400 and 500. Questions, headings, #1 picks.
-- Text: Zen Kaku Gothic New 400 and 500.
+- Text: Zen Kaku Gothic New 400.
 - Mono: Fragment Mono, only for ranks and dates.
-- All self-hosted through Fontsource. Sentence case, tight tracking on display sizes, body under 65 characters.
+- All self-hosted from `app/fonts` with `next/font/local`. Sentence case, tight tracking on display sizes, body under 65 characters.
 
 ## Structure
 
-- Hairlines carry the layout. No cards, no shadows, no glass.
+- Hairlines carry the layout. No cards, no drop shadows, no glass. The only edge effect is the chrome rule's 1px bezel.
 - Models are told apart by name and position, never by color.
-- Home opens on the headline, then the most divided question with the four #1 picks side by side.
+- Home opens on the headline, then the most divided question with the four #1 picks side by side, so the proof lands on the first phone screen. The intro comes after.
 
 ## Motion
 
-One authored moment: the chrome rule under the lead question catches light once on arrival. `prefers-reduced-motion` shows it still. Everything else is a quiet color change on hover.
+One authored moment: the chrome rule under the lead question draws in and its light settles once on arrival. It has a 1px dark bezel so the bright stops read on the pale ground. `prefers-reduced-motion` shows it still and turns off every transition. Hover never fades text; links and rows gain an ink underline.
 
 ## Don'ts
 

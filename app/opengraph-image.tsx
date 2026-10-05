@@ -1,10 +1,13 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { ImageResponse } from "next/og";
-import { home } from "@/content";
+import { home, site, summaryCopy } from "@/content";
+import { topPickSentence } from "@/lib/analysis";
 import { MODELS, getQuestions } from "@/lib/snapshots";
 
-export const alt = home.ogAlt;
+const lead = getQuestions()[0];
+
+export const alt = home.ogAlt(lead.question, topPickSentence(lead.summary, summaryCopy));
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -16,11 +19,12 @@ export default async function OpengraphImage() {
     font("shippori-mincho-latin-500-normal.woff"),
     font("zen-kaku-gothic-new-latin-400-normal.woff"),
   ]);
-  const lead = getQuestions()[0];
-
   return new ImageResponse(
     (
       <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", background: "#E3E4E2", color: "#141516", padding: "72px 80px", fontFamily: "Sans" }}>
+        <div style={{ display: "flex", justifyContent: "flex-end", fontFamily: "Serif", fontSize: 28, color: "#585B5E", marginTop: -24, marginBottom: 8 }}>
+          {site.name}
+        </div>
         <div style={{ fontFamily: "Serif", fontSize: 76, lineHeight: 1.05, letterSpacing: "-0.02em" }}>{home.heading}</div>
         <div style={{ fontFamily: "Serif", fontSize: 44, color: "#585B5E", marginTop: 16 }}>{home.subheading}</div>
         <div style={{ display: "flex", flexDirection: "column", marginTop: "auto" }}>

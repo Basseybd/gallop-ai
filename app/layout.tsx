@@ -6,7 +6,7 @@ import { footer, site } from "@/content";
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
-  title: { default: site.title, template: `%s. ${site.name}` },
+  title: { default: site.title, template: site.titleTemplate },
   description: site.description,
   openGraph: { title: site.title, description: site.description, url: site.url, siteName: site.name, type: "website" },
   twitter: { card: "summary_large_image", title: site.title, description: site.description },

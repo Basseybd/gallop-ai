@@ -8,7 +8,6 @@
   --color-hairline: #c5c7c8;
   --color-graphite: #17181a;
   --color-chrome: #c9cdd1;
-  --color-aluminum: #d4d7da;
 
   --font-display: var(--font-shippori), ui-serif, Georgia, serif;
   --font-sans: var(--font-zen), ui-sans-serif, system-ui, sans-serif;
@@ -53,29 +52,36 @@ a {
 
 /* The one chrome moment: a polished rule that catches light once on arrival. */
 .chrome-rule {
-  height: 2px;
+  height: 3px;
   background: var(--chrome);
-  background-size: 200% 100%;
-  background-position: 100% 0;
+  background-size: 100% 100%;
+  /* A dark bezel edge so the bright stops read against the pale ground. */
+  box-shadow: 0 1px 0 #7a8085;
+  transform-origin: left;
   animation: sheen 2.4s var(--ease-out-expo) 0.3s both;
 }
 
 @keyframes sheen {
   from {
+    background-size: 300% 100%;
     background-position: 0% 0;
     transform: scaleX(0.4);
-    transform-origin: left;
   }
   to {
-    background-position: 100% 0;
+    background-size: 100% 100%;
+    background-position: 0% 0;
     transform: scaleX(1);
-    transform-origin: left;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .chrome-rule {
     animation: none;
+  }
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
   }
   html {
     scroll-behavior: auto;
