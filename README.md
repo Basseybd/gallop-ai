@@ -2,6 +2,8 @@
 
 Ask four AIs the same question and they don't agree. Gallop puts OpenAI, Claude, Gemini and Perplexity side by side on the same questions, lines up each one's top five, and shows where they overlap and where they split. On big names like cloud providers they nearly match. On local spots, like burgers in San Francisco, they barely overlap.
 
+Live at [gallop-ai-eight.vercel.app](https://gallop-ai-eight.vercel.app).
+
 ![Gallop home page](docs/screenshot.png)
 
 ## About the data
