@@ -1,116 +1,53 @@
-# Gallop AI
+# Gallop
 
-**Keep up with AI trends & bias** - Discover how different AI models see the world
+Ask four AIs the same question and they don't agree. Gallop puts OpenAI, Claude, Gemini and Perplexity side by side on the same questions, keeps each one's top five, and shows where they overlap, where they split, and how often they change their minds.
 
-Gallop AI is a production-ready Next.js application that analyzes AI model biases and provides trend analysis capabilities. Compare how different AI models (OpenAI, Anthropic, Google Gemini, Perplexity) rank the same topics over time and uncover their unique perspectives and biases.
+Live at [gallop-ai.vercel.app](https://gallop-ai.vercel.app).
 
-## ✨ Features
+![Gallop home page](docs/screenshot.png)
 
-- **🔍 Bias Detection**: Compare rankings across multiple AI models to identify biases
-- **📈 Trend Analysis**: Track how AI model opinions change over time
-- **🤖 Multi-Model Support**: OpenAI GPT-4, Anthropic Claude, Google Gemini, Perplexity
-- **⚡ Real-time Analysis**: Streaming responses with Vercel AI SDK
-- **📊 Interactive Charts**: Beautiful visualizations with Recharts
-- **🌙 Modern UI**: Built with Next.js 15, React 19, and shadcn/ui
+## Stack
 
-## 🚀 Quick Start
+Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS 4, zod. Fully static, deployed on Vercel. No database, no client data fetching, no API keys.
 
-### Prerequisites
+## How it works
 
-- Node.js 18+ and pnpm
-- API keys for the AI providers you want to use
+- **Snapshots are the source of truth.** Each model's answers live in `data/<model>.json`, one top five per question per month. At build time `lib/snapshots.ts` validates every file with zod, checks the four models cover the same questions and months, and fails the build if they don't.
+- **Agreement is measured, not eyeballed.** For each question, Gallop takes the latest top five from each model and averages the overlap (Jaccard) across all six model pairs. Same five in any order is 1, nothing shared is 0. The home page sorts questions from least to most agreement.
+- **Spelling variants are merged first.** Models write "Blue Bottle" and "Blue Bottle Coffee" for the same place. A small alias table in `content.ts` maps variants to one name so overlap isn't understated. It's explicit and reviewable rather than fuzzy matching.
+- **Change is computed per month.** A month counts as a change when the normalized top five differs from the month before. That's what drives the tick strips and the "Show each change" lists.
+- **All the analysis is pure functions** in `lib/analysis.ts`, tested with Node's built-in test runner against hand-counted cases.
+- **Every page is prerendered.** Question pages come from `generateStaticParams` with `dynamicParams = false`, so unknown ids 404 instead of rendering on demand. The only JavaScript the browser runs is Next's own.
+- **Security headers** (CSP, HSTS, frame denial, nosniff, referrer and permissions policies) are set in `next.config.ts`. Production source maps are off.
 
-### Installation
+## Environment variables
 
-1. Clone the repository:
-```bash
-git clone https://github.com/yourusername/gallop-ai.git
-cd gallop-ai
-```
+None. The site builds and runs from the committed snapshots.
 
-2. Install dependencies:
-```bash
-pnpm install
-```
+## Run locally
 
-3. Set up environment variables:
-```bash
-cp .env.example .env.local
-```
-
-Add your API keys:
-```env
-OPENAI_API_KEY=your_openai_key_here
-ANTHROPIC_API_KEY=your_anthropic_key_here
-GOOGLE_GENERATIVE_AI_API_KEY=your_gemini_key_here
-PERPLEXITY_API_KEY=your_perplexity_key_here
-```
-
-4. Run the development server:
-```bash
-pnpm dev
-```
-
-5. Open [http://localhost:3000](http://localhost:3000) in your browser
-
-## 🏗️ Tech Stack
-
-- **Frontend**: Next.js 15 with React 19 (App Router)
-- **AI Integration**: Vercel AI SDK with streaming responses
-- **Database**: Prisma ORM with PlanetScale/Supabase (planned)
-- **Styling**: Tailwind CSS with shadcn/ui components
-- **Charts**: Recharts for data visualization
-- **Deployment**: Vercel with edge functions
-
-## 📁 Project Structure
-
-```
-gallop-ai/
-├── app/                    # Next.js App Router
-│   ├── api/               # API routes
-│   ├── globals.css        # Global styles
-│   ├── layout.tsx         # Root layout
-│   └── page.tsx           # Home page
-├── components/            # React components
-│   ├── ui/               # shadcn/ui components
-│   └── ...               # Custom components
-├── lib/                  # Utilities and business logic
-│   ├── ai-providers.ts   # AI model configurations
-│   ├── types.ts          # TypeScript types
-│   └── ...
-├── public/               # Static assets
-└── data/                # Sample data files
-```
-
-## 🔧 Development Commands
+Requires Node 24.
 
 ```bash
-# Development
-pnpm dev          # Start development server
-pnpm build        # Build for production
-pnpm start        # Start production server
-pnpm lint         # Run ESLint
-
-# Database (when configured)
-pnpm db:generate  # Generate Prisma client
-pnpm db:push      # Push schema to database
-pnpm db:migrate   # Run database migrations
+npm ci
+npm run dev        # http://localhost:3000
+npm test           # analysis tests
+npm run lint
+npm run typecheck
+npm run build
 ```
 
-## 🤝 Contributing
+## Project layout
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+```
+app/              pages, layout, Open Graph image, icon
+components/       agreement meter
+content.ts        all site copy, links and name aliases
+data/             model snapshots, one file per model
+lib/analysis.ts   overlap, rank grid, change detection (pure, tested)
+lib/snapshots.ts  loads and validates data at build time
+```
 
-## 📄 License
+## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- Built with [Vercel AI SDK](https://sdk.vercel.ai/)
-- UI components from [shadcn/ui](https://ui.shadcn.com/)
-- Powered by OpenAI, Anthropic, Google Gemini, and Perplexity APIs
+MIT
