@@ -31,14 +31,17 @@ Perplexity's browser support is unverified. If the browser can't reach it, the e
 3. `/ask` page and the client form, a shared `RankTable` component, home and header links, content.
 4. CSP, README, DESIGN.md, CLAUDE.md, security guidance.
 
+## Change on Oct 5, mid-build
+Bassey asked for integrations instead of keys, and for every model to be available and customizable. Connect OpenRouter (OAuth PKCE in the browser, key in memory only) is now the main path, with provider keys kept as a fallback. Visitors pick any 2 to 6 OpenRouter models and a top 3, 5 or 10.
+
 ## Done means
 1. A clean checkout passes lint, typecheck, test and build. Check: fresh copy, CI order.
-2. Keys never leave the browser except to their own provider. Check: Playwright with stubbed provider routes records every request on `/ask`. Each key appears only in the request to its own host, and nothing goes to the Gallop origin after load.
-3. Keys aren't stored. Check: after a run, localStorage, sessionStorage, cookies and the URL hold no key, and after a reload the fields are empty.
-4. With stubbed answers, the results show the right #1 picks, agreement and grid for 2, 3 and 4 models. Check: Playwright plus unit tests.
-5. Failures are per model and say how to recover (401, 404 model, 429, network, unparseable). Check: stubbed error responses.
-6. Model output can't inject markup. Check: a stub returns `<img src=x onerror=alert(1)>` and the page shows it as text.
-7. CSP on every page allows only self plus the four provider hosts in `connect-src`. Check: curl the headers.
-8. Every call carries a token cap and a timeout. Check: inspect the stubbed request bodies.
-9. No horizontal scroll at 390, 44 px targets, labelled inputs, visible focus, reduced motion. Check: screenshots and sweep.
+2. Keys never leave the browser except to their own host. Check: Playwright with stubbed routes records every request. Each provider key and the OpenRouter key appear only in requests to their own host, and nothing carrying a key goes to the Gallop origin.
+3. Nothing is stored. Check: after a run, localStorage, sessionStorage, cookies and the URL hold no key; after the OpenRouter return the PKCE stash is gone and the URL has no code; after a reload the fields are empty.
+4. Results are right for 2 to 6 lanes, any labels, and lengths 3, 5 and 10. Check: unit tests and Playwright.
+5. Failures are per lane and say how to recover (401, 404, 402/429, network, timeout, unparseable). A forged or stale callback is rejected. Check: stubbed errors and a forged `?code=` visit.
+6. Model output can't inject markup. Check: a stub returns an `<img onerror>` payload; it renders as text and never runs.
+7. CSP: `/ask` uses a per-request nonce with `connect-src` limited to self, openrouter.ai and the four provider hosts. Other pages keep their static policy. Check: curl the headers and look for no CSP violations in the console.
+8. Every call carries a token cap and a timeout. Check: inspect the stubbed request bodies and the code.
+9. No horizontal scroll at 390, 44 px targets, labelled inputs, visible focus, reduced motion. Check: screenshots and a sweep.
 10. Standing: pre-ship checklist, full council plus red team with nothing critical or high open, lessons updated, screenshots sent.
