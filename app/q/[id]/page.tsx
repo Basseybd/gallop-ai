@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AgreementMeter } from "@/components/agreement";
 import { aliases, question as copy } from "@/content";
-import { canonical, overlapSentence, topPickSentence } from "@/lib/analysis";
+import { canonical, diffLists, overlapSentence, topPickSentence } from "@/lib/analysis";
 import { MODELS, getQuestion, getQuestions } from "@/lib/snapshots";
 
 export const dynamicParams = false;
@@ -30,6 +30,7 @@ export default async function QuestionPage(props: PageProps<"/q/[id]">) {
   const next = all[index + 1];
   const first = q.months[0];
   const last = q.months[q.months.length - 1];
+  const cap = copy.changesCaption(first, last);
 
   return (
     <article className="mx-auto max-w-5xl px-5 sm:px-8">
@@ -57,18 +58,19 @@ export default async function QuestionPage(props: PageProps<"/q/[id]">) {
           {copy.gridHeading}
         </h2>
         <p className="mt-2 max-w-[60ch] text-sm text-secondary">
-          {copy.gridCaption} As of <span className="font-mono">{last}</span>.
+          {copy.gridCaption(last).text}
+          <span className="font-mono">{last}</span>.
         </p>
         <table className="mt-6 w-full border-collapse text-left">
           <thead>
             <tr className="border-b border-ink text-sm text-secondary">
               <th scope="col" className="py-3 pr-2 font-normal">
-                <span className="sr-only">Pick</span>
+                <span className="sr-only">{copy.pickColumn}</span>
               </th>
               {MODELS.map((m) => (
                 <th key={m} scope="col" className="w-[3.25rem] py-3 text-center font-normal sm:w-28">
                   <span className="sm:hidden" aria-hidden="true">
-                    {m === "Perplexity" ? "Perp." : m === "OpenAI" ? "OpenAI" : m}
+                    {copy.shortModel[m] ?? m}
                   </span>
                   <span className="sr-only sm:not-sr-only">{m}</span>
                 </th>
@@ -86,7 +88,7 @@ export default async function QuestionPage(props: PageProps<"/q/[id]">) {
                 </th>
                 {MODELS.map((m) => (
                   <td key={m} className="py-3 text-center font-mono text-sm">
-                    {row.ranks[m] ?? <span className="sr-only">Not listed</span>}
+                    {row.ranks[m] ?? <span className="sr-only">{copy.notListed}</span>}
                   </td>
                 ))}
               </tr>
@@ -100,8 +102,11 @@ export default async function QuestionPage(props: PageProps<"/q/[id]">) {
           {copy.changesHeading}
         </h2>
         <p className="mt-2 text-sm text-secondary">
-          Monthly, <span className="font-mono">{first}</span> to <span className="font-mono">{last}</span>. A dark tick
-          is a month the top five changed.
+          {cap.before}
+          <span className="font-mono">{cap.from}</span>
+          {cap.middle}
+          <span className="font-mono">{cap.to}</span>
+          {cap.after}
         </p>
         <ul className="mt-6 space-y-6">
           {MODELS.map((m, row) => {
@@ -154,6 +159,7 @@ export default async function QuestionPage(props: PageProps<"/q/[id]">) {
                             <p className="mt-1 leading-relaxed">
                               {q.lists[m][i].map((n) => canonical(n, aliases)).join(", ")}
                             </p>
+                            <ChangeNote prev={q.lists[m][i - 1]} next={q.lists[m][i]} />
                           </li>
                         ) : null,
                       )}
@@ -166,7 +172,7 @@ export default async function QuestionPage(props: PageProps<"/q/[id]">) {
         </ul>
       </section>
 
-      <nav aria-label="More questions" className="mt-20 grid gap-4 border-t border-hairline pt-6 sm:grid-cols-2">
+      <nav aria-label={copy.moreQuestions} className="mt-20 grid gap-4 border-t border-hairline pt-6 sm:grid-cols-2">
         {prev ? (
           <Link href={`/q/${prev.id}`} className="group block min-h-11 py-2">
             <span className="text-sm text-secondary">{copy.previous}</span>
@@ -183,5 +189,28 @@ export default async function QuestionPage(props: PageProps<"/q/[id]">) {
         )}
       </nav>
     </article>
+  );
+}
+
+/** What came in and what fell out versus the month before. A reorder alone gets no note. */
+function ChangeNote({ prev, next }: { prev?: string[]; next: string[] }) {
+  if (!prev) return null;
+  const { added, dropped } = diffLists(prev, next, aliases);
+  if (added.length === 0 && dropped.length === 0) return null;
+  return (
+    <dl className="mt-1 space-y-0.5 text-secondary">
+      {added.length > 0 && (
+        <div className="flex gap-2">
+          <dt>{copy.newLabel}:</dt>
+          <dd>{added.join(", ")}</dd>
+        </div>
+      )}
+      {dropped.length > 0 && (
+        <div className="flex gap-2">
+          <dt>{copy.dropped}:</dt>
+          <dd>{dropped.join(", ")}</dd>
+        </div>
+      )}
+    </dl>
   );
 }

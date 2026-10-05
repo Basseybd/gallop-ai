@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { agreement, changeMonths, overlapSentence, rankGrid, summarize, topPickSentence } from "./analysis.ts";
+import { agreement, canonical, changeMonths, diffLists, overlapSentence, rankGrid, summarize, topPickSentence } from "./analysis.ts";
 
 const same = ["AWS", "Azure", "GCP", "IBM", "Oracle"];
 
@@ -22,7 +22,7 @@ test("disjoint lists agree not at all", () => {
   };
   assert.equal(agreement(latest), 0);
   const s = summarize(latest);
-  assert.equal(overlapSentence(s), "20 different answers across 20 picks. Nothing makes every list.");
+  assert.equal(overlapSentence(s), "Across 20 picks, 20 different names. Nothing makes every list.");
   assert.equal(topPickSentence(s), "Four different #1 picks.");
 });
 
@@ -36,7 +36,7 @@ test("hand count: one item swapped in one model", () => {
   assert.equal(grid[0].name, "AWS");
   assert.equal(grid.at(-1)?.name, "DigitalOcean");
   assert.deepEqual(grid.at(-1)?.ranks, { OpenAI: 5, Claude: null, Gemini: null, Perplexity: null });
-  assert.equal(overlapSentence(summarize(latest)), "6 different answers across 20 picks. Four make every list.");
+  assert.equal(overlapSentence(summarize(latest)), "Across 20 picks, 6 different names. Four make every list.");
 });
 
 test("split #1 reads naturally", () => {
@@ -53,4 +53,20 @@ test("aliases merge spelling variants and case", () => {
   const aliases = { "Blue Bottle": "Blue Bottle Coffee" };
   const months = [["Blue Bottle", "b"], ["blue bottle coffee", "b"], ["Blue Bottle Coffee", "c"]];
   assert.deepEqual(changeMonths(months, aliases), [false, false, true]);
+});
+
+test("an even split names both sides", () => {
+  const latest = {
+    OpenAI: ["A", "x", "y", "z", "w"],
+    Claude: ["B", "x", "y", "z", "w"],
+    Gemini: ["B", "x", "y", "z", "w"],
+    Perplexity: ["A", "x", "y", "z", "w"],
+  };
+  assert.equal(topPickSentence(summarize(latest)), "OpenAI and Perplexity say A. Claude and Gemini say B.");
+});
+
+test("diff reports what came in and what fell out, with curly apostrophes", () => {
+  const d = diffLists(["Zuni", "Beep's Burgers", "Nopa"], ["Zuni", "Nopa", "Prospect"], {});
+  assert.deepEqual(d, { added: ["Prospect"], dropped: ["Beep\u2019s Burgers"] });
+  assert.equal(canonical("Gott's Roadside", {}), "Gott\u2019s Roadside");
 });

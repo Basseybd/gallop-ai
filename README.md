@@ -1,14 +1,18 @@
 # Gallop
 
-Ask four AIs the same question and they don't agree. Gallop puts OpenAI, Claude, Gemini and Perplexity side by side on the same questions, keeps each one's top five, and shows where they overlap, where they split, and how often they change their minds.
+Ask four AIs the same question and they don't agree. Gallop puts OpenAI, Claude, Gemini and Perplexity side by side on the same questions, lines up each one's top five, and shows where they overlap and where they split. On facts like cloud providers they nearly match. On taste, like burgers in San Francisco, they barely overlap.
 
 Live at [gallop-ai.vercel.app](https://gallop-ai.vercel.app).
 
 ![Gallop home page](docs/screenshot.png)
 
+## About the data
+
+The snapshots in `data/` come from the first prototype of this project: a top five per model, per question, per month from Jul 2024 to Jul 2025. Its prompts and model versions weren't recorded, so treat it as a sample, not a study. Most lists barely move month to month, which is why the site leads with how the models differ from each other rather than how they change over time. Nobody checked whether any answer is right.
+
 ## Stack
 
-Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS 4, zod. Fully static, deployed on Vercel. No database, no client data fetching, no API keys.
+Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS 4, zod. Fonts are self-hosted with `next/font/local` (Shippori Mincho, Zen Kaku Gothic New, Fragment Mono). Fully static, deployed on Vercel. No database, no client data fetching, no API keys.
 
 ## How it works
 
@@ -40,7 +44,7 @@ npm run build
 ## Project layout
 
 ```
-app/              pages, layout, Open Graph image, icon
+app/              pages, layout, fonts, Open Graph image, icon
 components/       agreement meter
 content.ts        all site copy, links and name aliases
 data/             model snapshots, one file per model

@@ -42,8 +42,18 @@ function load(): QuestionView[] {
   ) as Record<Model, z.infer<typeof fileSchema>>;
 
   const base = parsed.OpenAI;
+  if (base.length === 0) throw new Error("Snapshot has no questions");
+  const ids = base.map((e) => e.id).sort().join();
+  for (const m of MODELS) {
+    if (parsed[m].map((e) => e.id).sort().join() !== ids) throw new Error(`${m} snapshot has a different set of questions`);
+  }
+
   const views = base.map((entry): QuestionView => {
-    const months = Object.keys(entry.modelRankings.OpenAI);
+    const months = Object.keys(entry.modelRankings.OpenAI ?? {});
+    const times = months.map((mo) => Date.parse(`1 ${mo}`));
+    if (months.length === 0 || times.some((t, i) => Number.isNaN(t) || (i > 0 && t <= times[i - 1]))) {
+      throw new Error(`Months for ${entry.id} are missing, unreadable or out of order`);
+    }
     const lists = {} as Record<Model, string[][]>;
     for (const m of MODELS) {
       const match = parsed[m].find((e) => e.id === entry.id);

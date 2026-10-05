@@ -4,16 +4,17 @@ import { ImageResponse } from "next/og";
 import { home } from "@/content";
 import { MODELS, getQuestions } from "@/lib/snapshots";
 
-export const alt = "Gallop. Ask four AIs the same question. They don't agree.";
+export const alt = home.ogAlt;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-const font = (pkg: string, file: string) => readFile(join(process.cwd(), "node_modules/@fontsource", pkg, "files", file));
+// Satori reads woff, not woff2, so the OG image uses the woff copies kept next to the site fonts.
+const font = (file: string) => readFile(join(process.cwd(), "app/fonts", file));
 
 export default async function OpengraphImage() {
   const [serif, sans] = await Promise.all([
-    font("shippori-mincho", "shippori-mincho-latin-500-normal.woff"),
-    font("zen-kaku-gothic-new", "zen-kaku-gothic-new-latin-400-normal.woff"),
+    font("shippori-mincho-latin-500-normal.woff"),
+    font("zen-kaku-gothic-new-latin-400-normal.woff"),
   ]);
   const lead = getQuestions()[0];
 

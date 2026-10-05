@@ -1,9 +1,11 @@
+import { agreementLabels as L } from "@/content";
+
 export function agreementLabel(value: number): string {
-  if (value >= 0.999) return "Same five";
-  if (value >= 0.6) return "Mostly agree";
-  if (value >= 0.3) return "Some overlap";
-  if (value > 0.1) return "Little overlap";
-  return "Almost none";
+  if (value >= 0.999) return L.same;
+  if (value >= 0.6) return L.mostly;
+  if (value >= 0.3) return L.some;
+  if (value > 0.1) return L.little;
+  return L.none;
 }
 
 /** A thin graphite rule on aluminum, filled to the agreement score. */
@@ -17,7 +19,7 @@ export function AgreementMeter({ value }: { value: number }) {
         aria-valuemin={0}
         aria-valuemax={100}
         aria-valuenow={pct}
-        aria-label={`Agreement ${pct} percent`}
+        aria-label={L.sr(pct).replace(/\.$/, "")}
       >
         <div className="h-full bg-graphite" style={{ width: `${Math.max(pct, 2)}%` }} />
       </div>

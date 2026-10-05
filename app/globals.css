@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-@theme {
+@theme inline {
   --color-ground: #e3e4e2;
   --color-raised: #eff0ee;
   --color-ink: #141516;
@@ -10,9 +10,9 @@
   --color-chrome: #c9cdd1;
   --color-aluminum: #d4d7da;
 
-  --font-display: "Shippori Mincho", ui-serif, Georgia, serif;
-  --font-sans: "Zen Kaku Gothic New", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "Fragment Mono", ui-monospace, "SF Mono", monospace;
+  --font-display: var(--font-shippori), ui-serif, Georgia, serif;
+  --font-sans: var(--font-zen), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-fragment), ui-monospace, "SF Mono", monospace;
 
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }

@@ -24,7 +24,21 @@ export type Aliases = Record<string, string>;
 /** Map spelling variants to one display name, then compare case-insensitively. */
 export function canonical(name: string, aliases: Aliases): string {
   const trimmed = name.trim();
-  return aliases[trimmed] ?? trimmed;
+  return curly(aliases[trimmed] ?? trimmed);
+}
+
+/** Typographic apostrophes for display. */
+export function curly(text: string): string {
+  return text.replace(/'/g, "\u2019");
+}
+
+/** What came in and what fell out between two months, after merging aliases. */
+export function diffLists(prev: string[], next: string[], aliases: Aliases): { added: string[]; dropped: string[] } {
+  const a = prev.map((n) => canonical(n, aliases));
+  const b = next.map((n) => canonical(n, aliases));
+  const inA = new Set(a.map(key));
+  const inB = new Set(b.map(key));
+  return { added: b.filter((n) => !inA.has(key(n))), dropped: a.filter((n) => !inB.has(key(n))) };
 }
 
 const key = (name: string) => name.toLowerCase();
@@ -120,22 +134,26 @@ export function summarize(latest: Record<Model, string[]>): Summary {
 
 const NUMBER_WORDS = ["No", "One", "Two", "Three", "Four", "Five"];
 
+const join = (models: string[]) =>
+  models.length <= 2 ? models.join(" and ") : `${models.slice(0, -1).join(", ")} and ${models.at(-1)}`;
+
 /** One plain sentence about who agrees on #1. */
 export function topPickSentence(s: Summary): string {
   const [first, ...rest] = s.topPicks;
   if (rest.length === 0) return `${first.name} is #1 for all four.`;
   if (first.models.length === 1) return "Four different #1 picks.";
+  if (rest[0].models.length === first.models.length) {
+    return `${s.topPicks.map((t) => `${join(t.models)} say ${t.name}`).join(". ")}.`;
+  }
   const count = NUMBER_WORDS[first.models.length] ?? String(first.models.length);
-  const others = rest.map((r) => `${r.models.join(" and ")} ${r.models.length > 1 ? "say" : "says"} ${r.name}`);
+  const others = rest.map((r) => `${join(r.models)} ${r.models.length > 1 ? "say" : "says"} ${r.name}`);
   return `${count} of four put ${first.name} first. ${others.join(". ")}.`;
 }
 
 /** One plain sentence about overlap across the full top 5s. */
 export function overlapSentence(s: Summary): string {
   if (s.distinct === 5 && s.onEveryList.length === 5) return "All four give the same five.";
-  const shared =
-    s.onEveryList.length === 0
-      ? "Nothing makes every list."
-      : `${NUMBER_WORDS[s.onEveryList.length] ?? s.onEveryList.length} ${s.onEveryList.length === 1 ? "makes" : "make"} every list.`;
-  return `${s.distinct} different answers across ${s.picks} picks. ${shared}`;
+  const n = s.onEveryList.length;
+  const shared = n === 0 ? "Nothing makes every list." : `${NUMBER_WORDS[n] ?? n} ${n === 1 ? "makes" : "make"} every list.`;
+  return `Across ${s.picks} picks, ${s.distinct} different names. ${shared}`;
 }

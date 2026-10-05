@@ -8,6 +8,7 @@ export default function HomePage() {
   const questions = getQuestions();
   const lead = questions[0];
   const range = getRange();
+  const r = method.range(range.from, range.to);
 
   return (
     <div className="mx-auto max-w-5xl px-5 sm:px-8">
@@ -65,8 +66,9 @@ export default function HomePage() {
                     {q.question}
                   </p>
                   <p className="mt-2 text-sm text-secondary">
+                    <span className="sr-only">{home.topPicksLabel}: </span>
                     {q.summary.topPicks.length === 1
-                      ? `All four say ${q.summary.topPicks[0].name}`
+                      ? home.allFourSay(q.summary.topPicks[0].name)
                       : q.summary.topPicks.map((t) => t.name).join(", ")}
                   </p>
                 </div>
@@ -86,8 +88,11 @@ export default function HomePage() {
             <p key={p}>{p}</p>
           ))}
           <p>
-            Data covers <span className="font-mono text-sm text-ink">{range.from}</span> to{" "}
-            <span className="font-mono text-sm text-ink">{range.to}</span>.
+            {r.before}
+            <span className="font-mono text-sm text-ink">{r.from}</span>
+            {r.middle}
+            <span className="font-mono text-sm text-ink">{r.to}</span>
+            {r.after}
           </p>
         </div>
       </section>
