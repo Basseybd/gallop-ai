@@ -115,3 +115,8 @@ test("same list wording follows the list length", () => {
   assert.equal(overlapSentence(summarize({ x: three, y: three, z: three }), c), "All three give the same three.");
   assert.equal(overlapSentence(summarize({ x: three, y: three }), c), "Both give the same three.");
 });
+
+test("many lone dissenters collapse into one sentence", () => {
+  const latest = { a: ["X"], b: ["X"], c: ["P"], d: ["Q"], e: ["R"], f: ["S"] };
+  assert.equal(topPickSentence(summarize(latest), c), "Two of six put X first. The other four all pick something different.");
+});

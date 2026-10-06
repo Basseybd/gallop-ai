@@ -99,10 +99,10 @@ export const notFound = {
 
 export const ask = {
   title: "Ask your own",
-  description: "Ask any AI models the same question with your own OpenRouter account or API keys, and see where they agree.",
+  description: "Ask up to six AI models the same question on your own OpenRouter account or API keys, and see where they agree.",
   heading: "Ask your own question.",
   intro: "Pick two to six models, ask one question, and see where their rankings line up. It runs on your own OpenRouter credit or API keys.",
-  questionLabel: "Your question",
+  questionLabel: "Question",
   questionHint: (max: number) => `Something with more than one good answer, like best pizza in New York. Up to ${max} characters.`,
   lengthLegend: "How many each",
   lengthOption: (n: number) => `Top ${n}`,
@@ -112,11 +112,9 @@ export const ask = {
   connecting: "Connecting",
   connected: "Connected to OpenRouter.",
   disconnect: "Disconnect",
-  disconnected: "Disconnected. The key is gone from this page.",
+  disconnected: "Disconnected. This page forgot the key. Delete it in your OpenRouter account to turn it off.",
   connectBody:
-    "One click. OpenRouter gives this page a key that only lives in this tab and only goes back to OpenRouter. Gallop’s server never sees it, nothing is saved, and it’s gone when you reload.",
-  connectNote:
-    "Each connection adds a key named Gallop to your OpenRouter account. Delete old ones there any time, or set a credit limit when you connect.",
+    "One click. OpenRouter makes a key named Gallop that stays in this tab and only goes back to OpenRouter. Gallop saves nothing, and a reload forgets it. The key itself stays on your OpenRouter account until you delete it there.",
   keyName: "Gallop",
   defaultLanes: {
     "openai/gpt-4.1-mini": "GPT-4.1 Mini",
@@ -128,15 +126,18 @@ export const ask = {
   connectFailed: "OpenRouter didn’t finish connecting. Try again.",
   connectExpired: "That connection link expired or came from somewhere else. Connect again.",
   privacyLink: "Read how keys are used",
-  privacyHref: "https://github.com/Basseybd/gallop-ai/blob/main/lib/ask.ts",
+  privacyHref: "https://github.com/Basseybd/gallop-ai#how-it-works",
+  whereItGoes:
+    "Your question goes to OpenRouter or the provider, and on to each model’s company under its own privacy policy. Some free models may keep prompts, so skip anything private.",
 
   modeKeys: "Use your own provider keys instead",
   modeOpenRouter: "Use OpenRouter instead",
   keysHeading: "Your API keys",
   keysBody:
-    "Each key goes straight from this browser to its own provider. Gallop’s server never sees them, nothing is saved, and they’re gone when you reload.",
+    "Each key goes straight from this browser to its own provider. Gallop saves nothing, and a reload forgets them.",
   keyLabel: (provider: string) => `${provider} API key`,
-  keyHint: "Leave blank to skip. Each answer is capped at a few hundred tokens on your account.",
+  keyHint: "Leave blank to skip. Every answer has a hard token cap, so a run stays cheap.",
+  perplexityHint: "Perplexity may block calls from a browser. If it does, add Sonar through OpenRouter.",
   clearKeys: "Clear keys",
   cleared: "Keys cleared.",
   providerModelsSummary: "Model names",
@@ -144,7 +145,8 @@ export const ask = {
   providerModelHint: "Change these if a provider renames its models.",
 
   lanesHeading: "Models",
-  lanesHint: (min: number, max: number) => `Compare ${min} to ${max}. Any model on OpenRouter works, even two from the same company.`,
+  lanesHint: (min: number, max: number) =>
+    `Compare ${min} to ${max}. Any text model on OpenRouter, even two from the same company. Models that think out loud sometimes run out of room.`,
   removeLane: (label: string) => `Remove ${label}`,
   addModel: "Add a model",
   pickerLabel: "Search models",
@@ -152,10 +154,12 @@ export const ask = {
   pickerLoading: "Loading OpenRouter’s models",
   pickerFailed: "Couldn’t load the model list. Type a model id instead, like mistralai/mistral-small.",
   pickerEmpty: "No models match. Try a shorter search.",
+  pickerMore: (shown: number, total: number) => `Showing ${shown} of ${total}. Keep typing to narrow it down.`,
   pickerUseId: (id: string) => `Use ${id}`,
-  pickerPrice: (out: number | null) => (out === null ? "" : out === 0 ? "free" : `$${out} per 1M out`),
-  pickerClose: "Done",
-  lanesFull: (max: number) => `That’s ${max}, the most this page compares at once.`,
+  pickerPrice: (out: number | null) => (out === null ? "" : out === 0 ? "Free" : `$${out.toFixed(2)} per 1M out`),
+  pickerAdded: "Added",
+  pickerClose: "Close search",
+  lanesFull: (max: number) => `That’s ${max}, the most this page compares at once. Remove one to add another.`,
 
   submit: "Ask",
   asking: "Asking",
@@ -164,26 +168,36 @@ export const ask = {
   needTwoKeys: "Add keys for at least two providers to compare them.",
   badQuestion: (max: number) => `Ask something between 3 and ${max} characters.`,
   badKey: (provider: string) => `That ${provider} key has spaces or odd characters. Paste it again.`,
-  badModel: (label: string) => `The model name for ${label} can only use letters, numbers, dots, dashes, slashes and colons.`,
+  badModel: (label: string) =>
+    `The model name for ${label} can only use letters, numbers, dots, dashes, slashes and colons. Fix it and ask again.`,
 
   waiting: "Waiting",
+  progress: (done: number, total: number, failed: number) =>
+    done < total
+      ? `${done} of ${total} answered.`
+      : failed === 0
+        ? `All ${total} answered.`
+        : failed === total
+          ? "None answered. Each model says why below."
+          : `${total - failed} of ${total} answered. ${failed} didn’t, see why below.`,
   gridHeading: "Every pick",
   gridCaption: "Each model’s rank for everything any of them listed. A blank means that model left it out.",
+  gridScroll: "Every pick, scrolls sideways",
   onlyOne: "Only one model answered, so there’s nothing to compare. Fix the others and ask again.",
   errors: {
-    key: (m: string) => `${m}: the key was rejected. Reconnect or check it, then try again.`,
-    model: (m: string) => `${m}: that model wasn’t found. Swap it for another and try again.`,
-    limit: (m: string) => `${m}: out of credit or rate limited. Wait a minute or top up, then try again.`,
+    key: () => "The key was rejected. Reconnect or check it, then try again.",
+    model: () => "That model wasn’t found. Swap it for another and try again.",
+    limit: () => "Out of credit or rate limited. Wait a minute or top up, then try again.",
     network: (m: string) =>
       m === "Perplexity"
-        ? "Couldn’t reach Perplexity from the browser. Its API may not allow direct browser calls. Use OpenRouter for Perplexity instead."
-        : `Couldn’t reach ${m}. Check your connection and try again.`,
-    timeout: (m: string) => `${m} took longer than ${TIMEOUT_SECONDS} seconds. Try again or pick a faster model.`,
-    cap: (m: string) => `${m} ran out of room before it finished. Try Top 3, or pick a model that doesn’t think out loud.`,
-    blocked: (m: string) => `${m} refused the question under its content rules. Try rewording it.`,
-    unreadable: (m: string) => `${m} answered, but not with a numbered list. Try rewording the question.`,
-    provider: (m: string) => `${m} had a problem on its end. Try again in a moment.`,
-  },
+        ? "Couldn’t reach Perplexity from the browser. Its API may not allow direct browser calls. Use Sonar through OpenRouter instead."
+        : "Couldn’t reach it. Check your connection and try again.",
+    timeout: () => `Took longer than ${TIMEOUT_SECONDS} seconds. Try again or pick a faster model.`,
+    cap: () => "Ran out of room before it finished. Try Top 3, or pick a model that doesn’t think out loud.",
+    blocked: () => "Refused the question under its content rules. Try rewording it.",
+    unreadable: () => "Answered, but not with a numbered list. Try rewording the question.",
+    provider: () => "Had a problem on its end. Try again in a moment.",
+  } as Record<string, (m: string) => string>,
 };
 
 /** Sentence parts for the summaries in lib/analysis.ts, which stays pure and takes these as an argument. */
@@ -196,6 +210,7 @@ export const summaryCopy = {
   allDifferent: (countWord: string) => `${countWord} different #1 picks.`,
   says: (models: string, name: string, plural: boolean) => `${models} ${plural ? "say" : "says"} ${name}`,
   majority: (count: string, name: string, totalWord: string) => `${count} of ${totalWord} put ${name} first.`,
+  othersDiffer: (countWord: string) => `The other ${countWord} all pick something different.`,
   sameList: (total: number, totalWord: string, lengthWord: string) =>
     total === 2 ? `Both give the same ${lengthWord}.` : `All ${totalWord} give the same ${lengthWord}.`,
   noneShared: "Nothing makes every list.",

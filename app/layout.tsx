@@ -32,7 +32,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           </Link>
           <nav aria-label="Site" className="-mr-2 flex items-center">
             {/* A full page load, so /ask always gets its own document and headers. */}
-            <a href="/ask" className="inline-flex min-h-11 items-center px-2 text-sm text-secondary hover:text-ink">
+            <a href="/ask" className="inline-flex min-h-11 min-w-11 items-center justify-center px-2 text-sm text-secondary hover:text-ink">
               {site.askNav}
             </a>
             <a href={site.repo} className="inline-flex min-h-11 items-center px-2 text-sm text-secondary hover:text-ink">

@@ -1,13 +1,28 @@
 import type { Metadata } from "next";
 import { connection } from "next/server";
 import { AskForm } from "@/components/ask/ask-form";
-import { ask } from "@/content";
+import { ask, site } from "@/content";
 
 export const metadata: Metadata = {
   title: ask.title,
   description: ask.description,
   // Keys are typed here. Keep this URL out of anything the visitor clicks through to.
   referrer: "no-referrer",
+  // Setting openGraph here replaces the root block, so it carries the image, url and site name too.
+  openGraph: {
+    title: `${ask.title} | ${site.name}`,
+    description: ask.description,
+    url: "/ask",
+    siteName: site.name,
+    type: "website",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: site.title }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${ask.title} | ${site.name}`,
+    description: ask.description,
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: site.title }],
+  },
 };
 
 export default async function AskPage() {

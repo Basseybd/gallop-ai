@@ -159,6 +159,7 @@ export type SummaryCopy = {
   allDifferent: (countWord: string) => string;
   says: (models: string, name: string, plural: boolean) => string;
   majority: (count: string, name: string, totalWord: string) => string;
+  othersDiffer: (countWord: string) => string;
   sameList: (total: number, totalWord: string, lengthWord: string) => string;
   noneShared: string;
   shared: (count: string, n: number) => string;
@@ -178,6 +179,11 @@ export function topPickSentence(s: Summary, c: SummaryCopy): string {
   const says = (t: { name: string; models: string[] }) => c.says(join(t.models, c.and), t.name, t.models.length > 1);
   if (rest[0].models.length === first.models.length) return `${s.topPicks.map(says).join(". ")}.`;
   const count = c.numbers[first.models.length] ?? String(first.models.length);
+  // Past a few dissenters, a roll call reads like a log. Summarize them instead.
+  if (rest.length >= 3 && rest.every((r) => r.models.length === 1)) {
+    const others = rest.length;
+    return `${c.majority(count, first.name, totalWord)} ${c.othersDiffer(c.totals[others] ?? String(others))}`;
+  }
   return `${c.majority(count, first.name, totalWord)} ${rest.map(says).join(". ")}.`;
 }
 

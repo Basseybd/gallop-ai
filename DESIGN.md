@@ -11,6 +11,7 @@ Bassey Duke's silver and chrome system: a calm, pale room with one polished chro
 | ink | #141516 | text |
 | secondary | #585B5E | supporting text |
 | hairline | #C5C7C8 | rules, meter track, tick baseline |
+| edge | #8D9398 | form field and segmented-control borders (stronger than a hairline so fields read as fields) |
 | graphite | #17181A | meter fill, changed ticks, focus ring |
 | chrome | gradient | the one rule under the lead question |
 
@@ -29,11 +30,10 @@ Bassey Duke's silver and chrome system: a calm, pale room with one polished chro
 
 ## Ask your own
 
-- Same room: form fields are raised silver with a hairline border, labels above, hints below in secondary.
+- Same room: form fields are raised silver with an edge border, labels above, hints below in secondary. Keys mode is one column of hairline rows, not a grid of boxes.
 - One solid graphite button (Ask). Connect OpenRouter is outlined. Everything else is an underlined text link.
 - The list length is a three-way segmented control; the chosen segment fills graphite.
-- Connected state is a small chrome bead, the page's second chrome moment.
-- Model lanes are hairline rows with the name and the id in mono. Results reuse the lead-question layout and the rank table, which scrolls inside itself on phones when there are many columns.
+- Model lanes are hairline rows with the name and the id in mono. Results reuse the home lead layout (vertical hairlines, one rule underneath) and the rank table. Past four models the table keeps a minimum width and scrolls sideways inside its own labelled region.
 
 ## Motion
 

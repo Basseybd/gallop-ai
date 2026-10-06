@@ -10,19 +10,8 @@ Let a visitor type a question, paste their own API keys, and see each model's to
 - `/`: an "Ask your own question" link under the lead question. The header gets "Ask".
 
 ## How keys are handled
-- Keys live only in React state in the `/ask` tab. Never localStorage, sessionStorage, cookies, URLs or logs. They're gone on refresh, and a "Clear keys" button wipes them.
-- Each call goes straight from the browser to the provider host. There's no Gallop API route.
-- The CSP `connect-src` allows only `'self'` plus the four provider hosts. No third-party scripts.
-- Each call is capped by output tokens and a 30s timeout. One run at a time.
-- Model output is parsed into at most five short strings, then rendered as text only.
+Superseded by the Oct 5 change below and `.claude/claude-security-guidance.md`, which is the source of truth: keys in memory only, sessionStorage holds only the PKCE stash during the OpenRouter redirect, caps are 400 or 700 tokens (plus 600 for Gemini), and the timeout is 45s.
 
-## Providers
-| Model | Host | Default model | Cap |
-| --- | --- | --- | --- |
-| OpenAI | api.openai.com | gpt-4.1-mini | max_completion_tokens 300 |
-| Claude | api.anthropic.com (direct-browser header) | claude-haiku-4-5-20251001 | max_tokens 300 |
-| Gemini | generativelanguage.googleapis.com | gemini-3.5-flash-lite | maxOutputTokens 1024 (room for thinking) |
-| Perplexity | api.perplexity.ai | sonar | max_tokens 300 |
 Perplexity's browser support is unverified. If the browser can't reach it, the error says so plainly.
 
 ## Work packages
