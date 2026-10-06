@@ -6,7 +6,7 @@ export const site = {
   titleTemplate: "%s | Gallop",
   description:
     "OpenAI, Claude, Gemini and Perplexity rank the same questions. On big names they mostly agree. On local spots, they barely overlap.",
-  url: "https://gallop-ai.vercel.app",
+  url: "https://gallop-ai-eight.vercel.app",
   repo: "https://github.com/Basseybd/gallop-ai",
   author: { name: "Bassey Duke", url: "https://basseyduke.io" },
   skip: "Skip to content",
