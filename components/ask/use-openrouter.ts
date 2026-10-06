@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { ask as copy } from "@/content";
 import { PKCE_STORAGE_KEY, authUrl, challengeFor, exchangeCode, randomToken, readStash } from "@/lib/openrouter";
 
 export type ConnectState = "idle" | "connecting" | "connected" | "failed" | "expired";
@@ -57,7 +58,7 @@ export function useOpenRouter() {
       const st = randomToken(16);
       const challenge = await challengeFor(verifier);
       window.sessionStorage.setItem(PKCE_STORAGE_KEY, JSON.stringify({ verifier, state: st, at: Date.now() }));
-      window.location.assign(authUrl(`${window.location.origin}${window.location.pathname}`, challenge, st));
+      window.location.assign(authUrl(`${window.location.origin}${window.location.pathname}`, challenge, st, copy.keyName));
     } catch {
       setState("failed");
     }

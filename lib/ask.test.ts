@@ -99,11 +99,10 @@ test("errors map to something actionable", () => {
 });
 
 test("duplicate lane labels get numbered", () => {
-  const out = uniqueLabels([
-    { label: "Sonar", transport: "openrouter", model: "perplexity/sonar" },
-    { label: "Sonar", transport: "openrouter", model: "perplexity/sonar" },
-  ]);
-  assert.deepEqual(out.map((l) => l.label), ["Sonar", "Sonar (2)"]);
+  const fmt = (l: string, n: number) => `${l} (${n})`;
+  const lane = (label: string): Lane => ({ label, transport: "openrouter", model: "x/y" });
+  assert.deepEqual(uniqueLabels([lane("Sonar"), lane("Sonar")], fmt).map((l) => l.label), ["Sonar", "Sonar (2)"]);
+  assert.deepEqual(uniqueLabels([lane("X"), lane("X"), lane("X (2)")], fmt).map((l) => l.label), ["X", "X (2)", "X (2) (2)"]);
 });
 
 test("PKCE: S256 challenge matches the RFC 7636 example", async () => {
@@ -111,7 +110,7 @@ test("PKCE: S256 challenge matches the RFC 7636 example", async () => {
 });
 
 test("auth url carries the challenge, state and callback, and nothing secret", () => {
-  const url = new URL(authUrl("https://gallop.example/ask", "chal", "st8"));
+  const url = new URL(authUrl("https://gallop.example/ask", "chal", "st8", "Gallop"));
   assert.equal(url.origin, OPENROUTER_HOST);
   assert.equal(url.searchParams.get("code_challenge"), "chal");
   assert.equal(url.searchParams.get("code_challenge_method"), "S256");
@@ -143,4 +142,16 @@ test("catalog keeps text models with clean ids, shortens names, prices per milli
   assert.deepEqual(searchCatalog(cat, "haiku").map((m) => m.id), ["anthropic/claude-haiku-4.5"]);
   assert.deepEqual(searchCatalog(cat, "perplexity sonar").map((m) => m.id), ["perplexity/sonar"]);
   assert.deepEqual(parseCatalog(null), []);
+});
+
+test("parse handles bold names with descriptions, headings and nested items", () => {
+  assert.deepEqual(parseList("1. **Paris**: city of light\n2. **Rome** - eternal city", 5), ["Paris", "Rome"]);
+  assert.deepEqual(parseList("### 1. Paris\n**2. Rome**", 5), ["Paris", "Rome"]);
+  assert.deepEqual(parseList("1. Paris\n   1. Louvre\n2. Rome", 5), ["Paris", "Rome"]);
+  assert.deepEqual(parseList("<think>1. nope</think>\n1. Paris", 5), ["Paris"]);
+});
+
+test("a cap hit with no list is reported as cap", () => {
+  assert.equal(errorFor(400, "max_tokens is too large for this model"), "provider");
+  assert.equal(errorFor(403, "Input was flagged by moderation"), "blocked");
 });

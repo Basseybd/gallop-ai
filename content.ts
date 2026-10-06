@@ -1,5 +1,7 @@
 // Every claim, link, and piece of copy on the site lives here.
 
+import { TIMEOUT_SECONDS } from "./lib/ask.ts";
+
 export const site = {
   name: "Gallop",
   title: "Gallop. Ask four AIs the same question.",
@@ -115,6 +117,14 @@ export const ask = {
     "One click. OpenRouter gives this page a key that only lives in this tab and only goes back to OpenRouter. Gallop’s server never sees it, nothing is saved, and it’s gone when you reload.",
   connectNote:
     "Each connection adds a key named Gallop to your OpenRouter account. Delete old ones there any time, or set a credit limit when you connect.",
+  keyName: "Gallop",
+  defaultLanes: {
+    "openai/gpt-4.1-mini": "GPT-4.1 Mini",
+    "anthropic/claude-haiku-4.5": "Claude Haiku 4.5",
+    "google/gemini-3.5-flash-lite": "Gemini 3.5 Flash Lite",
+    "perplexity/sonar": "Sonar",
+  } as Record<string, string>,
+  duplicateLabel: (label: string, n: number) => `${label} (${n})`,
   connectFailed: "OpenRouter didn’t finish connecting. Try again.",
   connectExpired: "That connection link expired or came from somewhere else. Connect again.",
   privacyLink: "Read how keys are used",
@@ -168,7 +178,9 @@ export const ask = {
       m === "Perplexity"
         ? "Couldn’t reach Perplexity from the browser. Its API may not allow direct browser calls. Use OpenRouter for Perplexity instead."
         : `Couldn’t reach ${m}. Check your connection and try again.`,
-    timeout: (m: string) => `${m} took longer than 45 seconds. Try again or pick a faster model.`,
+    timeout: (m: string) => `${m} took longer than ${TIMEOUT_SECONDS} seconds. Try again or pick a faster model.`,
+    cap: (m: string) => `${m} ran out of room before it finished. Try Top 3, or pick a model that doesn’t think out loud.`,
+    blocked: (m: string) => `${m} refused the question under its content rules. Try rewording it.`,
     unreadable: (m: string) => `${m} answered, but not with a numbered list. Try rewording the question.`,
     provider: (m: string) => `${m} had a problem on its end. Try again in a moment.`,
   },

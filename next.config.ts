@@ -4,7 +4,7 @@ const isDev = process.env.NODE_ENV === "development";
 
 // Static pages with no user input or third-party scripts. Next's inline bootstrap scripts need
 // 'unsafe-inline' without nonces, and nonces would force every page to render per request.
-// /ask takes API keys, so it is excluded here and gets a nonce policy from proxy.ts instead.
+// /ask takes API keys, so proxy.ts replaces this policy there with a per-request nonce policy.
 const csp = [
   "default-src 'self'",
   `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
@@ -35,8 +35,9 @@ const nextConfig: NextConfig = {
         ],
       },
       {
-        // Every page except /ask, which gets a stricter per-request nonce policy from proxy.ts.
-        source: "/:path((?!ask$).*)",
+        // Every path. On /ask, proxy.ts replaces this with a stricter per-request nonce policy, and
+        // anything that skips the proxy still gets this one instead of none.
+        source: "/(.*)",
         headers: [{ key: "Content-Security-Policy", value: csp }],
       },
     ];

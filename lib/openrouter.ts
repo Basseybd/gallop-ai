@@ -20,18 +20,19 @@ export async function challengeFor(verifier: string): Promise<string> {
   return base64url(new Uint8Array(digest));
 }
 
-export function authUrl(callbackUrl: string, challenge: string, state: string): string {
+export function authUrl(callbackUrl: string, challenge: string, state: string, keyLabel: string): string {
   const params = new URLSearchParams({
     callback_url: callbackUrl,
     code_challenge: challenge,
     code_challenge_method: "S256",
     state,
-    key_label: "Gallop",
+    key_label: keyLabel,
   });
   return `${OPENROUTER_HOST}/auth?${params}`;
 }
 
-export type PkceStash = { verifier: string; state: string; at: number };
+/** Verifier and state for PKCE, plus the question and length so the form survives the redirect. Never a key. */
+export type PkceStash = { verifier: string; state: string; at: number; question?: string; length?: number };
 
 export function readStash(raw: string | null, now: number): PkceStash | null {
   if (!raw) return null;
@@ -39,7 +40,10 @@ export function readStash(raw: string | null, now: number): PkceStash | null {
     const v = JSON.parse(raw) as Partial<PkceStash>;
     if (typeof v.verifier !== "string" || typeof v.state !== "string" || typeof v.at !== "number") return null;
     if (now - v.at > PKCE_MAX_AGE_MS || v.at > now) return null;
-    return { verifier: v.verifier, state: v.state, at: v.at };
+    const out: PkceStash = { verifier: v.verifier, state: v.state, at: v.at };
+    if (typeof v.question === "string") out.question = v.question.slice(0, 200);
+    if (typeof v.length === "number") out.length = v.length;
+    return out;
   } catch {
     return null;
   }
@@ -55,6 +59,8 @@ export async function exchangeCode(code: string, verifier: string): Promise<stri
       credentials: "omit",
       referrerPolicy: "no-referrer",
       cache: "no-store",
+      redirect: "error",
+      signal: AbortSignal.timeout(15_000),
     });
     if (!res.ok) return null;
     const body = (await res.json().catch(() => null)) as { key?: unknown } | null;
@@ -90,7 +96,13 @@ export function parseCatalog(body: unknown): CatalogModel[] {
 
 export async function fetchCatalog(signal?: AbortSignal): Promise<CatalogModel[] | null> {
   try {
-    const res = await fetch(`${OPENROUTER_HOST}/api/v1/models`, { signal, credentials: "omit", referrerPolicy: "no-referrer" });
+    const timeout = AbortSignal.timeout(15_000);
+    const res = await fetch(`${OPENROUTER_HOST}/api/v1/models`, {
+      signal: signal ? AbortSignal.any([signal, timeout]) : timeout,
+      credentials: "omit",
+      referrerPolicy: "no-referrer",
+      redirect: "error",
+    });
     if (!res.ok) return null;
     return parseCatalog(await res.json());
   } catch {

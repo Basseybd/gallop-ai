@@ -1,9 +1,12 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { ASK_HOSTS } from "@/lib/ask";
 
-// Only /ask runs through here. Keys are typed on that page, so it gets a per-request nonce CSP
+// Only /ask runs through here. next.config.ts sets the static CSP on every path, and this one replaces it.
+// Keys are typed on that page, so it gets a per-request nonce CSP
 // (no inline script without the nonce) and may only open connections to Gallop, OpenRouter and the four providers.
 export function proxy(request: NextRequest) {
+  // The matcher is case-insensitive. Anything but the exact page keeps the static policy from next.config.ts.
+  if (request.nextUrl.pathname !== "/ask") return NextResponse.next();
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
   const isDev = process.env.NODE_ENV === "development";
   const csp = [
@@ -34,12 +37,6 @@ export function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    {
-      source: "/ask",
-      missing: [
-        { type: "header", key: "next-router-prefetch" },
-        { type: "header", key: "purpose", value: "prefetch" },
-      ],
-    },
+    "/ask",
   ],
 };

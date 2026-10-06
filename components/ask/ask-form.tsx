@@ -3,7 +3,7 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { ask as copy } from "@/content";
 import {
-  DEFAULT_OPENROUTER_LANES,
+  DEFAULT_OPENROUTER_MODELS,
   DEFAULT_PROVIDER_MODELS,
   LIST_LENGTHS,
   MAX_LANES,
@@ -48,7 +48,9 @@ export function AskForm() {
   const [mode, setMode] = useState<"openrouter" | "keys">("openrouter");
   const [question, setQuestion] = useState("");
   const [length, setLength] = useState<ListLength>(5);
-  const [lanes, setLanes] = useState<Lane[]>(DEFAULT_OPENROUTER_LANES);
+  const [lanes, setLanes] = useState<Lane[]>(() =>
+    DEFAULT_OPENROUTER_MODELS.map((model) => ({ label: copy.defaultLanes[model] ?? model, transport: "openrouter", model })),
+  );
   const [picking, setPicking] = useState(false);
   // Provider keys exist only in this component's memory. No storage, no URL, no server.
   const [keys, setKeys] = useState<Record<Provider, string>>(emptyKeys);
@@ -75,7 +77,7 @@ export function AskForm() {
       if (!openrouter.key) return fail(copy.needConnection);
       if (lanes.length < MIN_LANES) return fail(copy.needTwo(MIN_LANES));
       for (const l of lanes) if (!cleanModel(l.model)) return fail(copy.badModel(l.label));
-      toRun = uniqueLabels(lanes.slice(0, MAX_LANES)).map((lane) => ({ lane, key: openrouter.key! }));
+      toRun = uniqueLabels(lanes.slice(0, MAX_LANES), copy.duplicateLabel).map((lane) => ({ lane, key: openrouter.key! }));
     } else {
       const chosen = PROVIDERS.filter((p) => keys[p].trim() !== "");
       for (const p of chosen) {
@@ -104,12 +106,16 @@ export function AskForm() {
 
   function clearKeys() {
     running.current?.abort();
+    setRun(null);
+    setStatus({});
     setKeys(emptyKeys());
     setMessage({ text: copy.cleared, error: false });
   }
 
   function disconnect() {
     running.current?.abort();
+    setRun(null);
+    setStatus({});
     openrouter.disconnect();
     setMessage({ text: copy.disconnected, error: false });
   }

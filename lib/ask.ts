@@ -4,17 +4,19 @@
 
 export const QUESTION_MAX = 140;
 export const TIMEOUT_MS = 45_000;
+export const TIMEOUT_SECONDS = TIMEOUT_MS / 1000;
 export const LIST_LENGTHS = [3, 5, 10] as const;
 export type ListLength = (typeof LIST_LENGTHS)[number];
 export const MIN_LANES = 2;
 export const MAX_LANES = 6;
 
-/** Output cap per call. Enough for the list, small enough that one run costs the visitor about a cent. */
+/** Output cap per call. Enough for the list, small enough that a run on the default models costs about a cent. */
 export function outputCap(length: ListLength): number {
   return length === 10 ? 700 : 400;
 }
-/** Gemini's flash-lite models can spend output tokens on thinking, so direct Gemini calls get more room. */
+/** Gemini models can spend output tokens on thinking, so Gemini lanes get more room. */
 export const GEMINI_EXTRA = 600;
+const isGemini = (lane: Lane) => lane.transport === "Gemini" || (lane.transport === "openrouter" && lane.model.startsWith("google/gemini"));
 
 export const PROVIDERS = ["OpenAI", "Claude", "Gemini", "Perplexity"] as const;
 export type Provider = (typeof PROVIDERS)[number];
@@ -33,12 +35,13 @@ export const ASK_HOSTS = [OPENROUTER_HOST, ...Object.values(PROVIDER_HOSTS)];
 /** One column in the comparison: a label, how to reach it, and which model. */
 export type Lane = { label: string; transport: Transport; model: string };
 
-export const DEFAULT_OPENROUTER_LANES: Lane[] = [
-  { label: "GPT-4.1 Mini", transport: "openrouter", model: "openai/gpt-4.1-mini" },
-  { label: "Claude Haiku 4.5", transport: "openrouter", model: "anthropic/claude-haiku-4.5" },
-  { label: "Gemini 3.5 Flash Lite", transport: "openrouter", model: "google/gemini-3.5-flash-lite" },
-  { label: "Sonar", transport: "openrouter", model: "perplexity/sonar" },
-];
+/** The default OpenRouter lanes. Their display names live in content.ts. */
+export const DEFAULT_OPENROUTER_MODELS = [
+  "openai/gpt-4.1-mini",
+  "anthropic/claude-haiku-4.5",
+  "google/gemini-3.5-flash-lite",
+  "perplexity/sonar",
+] as const;
 
 export const DEFAULT_PROVIDER_MODELS: Record<Provider, string> = {
   OpenAI: "gpt-4.1-mini",
@@ -78,7 +81,7 @@ const post = (headers: Record<string, string>, body: unknown): ProviderRequest["
 
 /** The exact request for one lane. The key is used here and nowhere else. */
 export function buildRequest(lane: Lane, key: string, question: string, n: ListLength): ProviderRequest {
-  const cap = outputCap(n);
+  const cap = outputCap(n) + (isGemini(lane) ? GEMINI_EXTRA : 0);
   const messages = [
     { role: "system", content: system(n) },
     { role: "user", content: userPrompt(question, n) },
@@ -87,7 +90,11 @@ export function buildRequest(lane: Lane, key: string, question: string, n: ListL
     case "openrouter":
       return {
         url: `${OPENROUTER_HOST}/api/v1/chat/completions`,
-        init: post({ authorization: `Bearer ${key}` }, { model: lane.model, messages, max_tokens: cap }),
+        // Keep reasoning short and out of the answer, so thinking models don't spend the whole cap.
+        init: post(
+          { authorization: `Bearer ${key}` },
+          { model: lane.model, messages, max_tokens: cap, reasoning: { effort: "low", exclude: true } },
+        ),
       };
     case "OpenAI":
       return {
@@ -115,7 +122,7 @@ export function buildRequest(lane: Lane, key: string, question: string, n: ListL
           {
             systemInstruction: { parts: [{ text: system(n) }] },
             contents: [{ role: "user", parts: [{ text: userPrompt(question, n) }] }],
-            generationConfig: { maxOutputTokens: cap + GEMINI_EXTRA },
+            generationConfig: { maxOutputTokens: cap },
           },
         ),
       };
@@ -133,6 +140,13 @@ const get = (v: unknown, ...path: (string | number)[]): unknown =>
 const texts = (parts: unknown, sep: string) =>
   Array.isArray(parts) ? parts.map((p) => (typeof get(p, "text") === "string" ? (get(p, "text") as string) : "")).join(sep) : "";
 
+/** True when the model stopped because it hit the output cap. */
+export function hitCap(transport: Transport, body: unknown): boolean {
+  if (transport === "Claude") return get(body, "stop_reason") === "max_tokens";
+  if (transport === "Gemini") return get(body, "candidates", 0, "finishReason") === "MAX_TOKENS";
+  return get(body, "choices", 0, "finish_reason") === "length";
+}
+
 /** Pull the answer text out of each response shape. */
 export function extractText(transport: Transport, body: unknown): string {
   if (transport === "Claude") return texts(get(body, "content"), "\n");
@@ -143,24 +157,44 @@ export function extractText(transport: Transport, body: unknown): string {
 
 const NAME_MAX = 80;
 
-/** Up to n names from a numbered list. Strips markdown, citations and trailing descriptions. */
+/** Clean one list item down to its name. */
+function cleanName(raw: string): string {
+  let name = raw.trim();
+  // A lone closing marker, left over from "**2. Name**" after the number ate the opening one.
+  for (const mark of ["**", "__"]) {
+    if (name.endsWith(mark) && name.split(mark).length % 2 === 0) name = name.slice(0, -mark.length).trim();
+  }
+  // "**Name**: description" or "__Name__ - description": the bold part is the name.
+  const bold = name.match(/^(\*\*|__)(.+?)\1/);
+  if (bold) name = bold[2];
+  name = name
+    .replace(/(\*\*|__)(.+?)\1/g, "$2") // other paired bold markers
+    .replace(/`/g, "") // code markers
+    .replace(/^[*_](.+)[*_]$/, "$1") // a name wrapped in single emphasis
+    .replace(/\[(\d+|[a-z])\]/gi, "") // citation markers like [1]
+    .replace(/\s+[-:\u2013\u2014]\s+.*$/, "") // " - description"
+    .replace(/:\s+.*$/, "") // "Name: description"
+    .replace(/\s*\(.*\)\s*$/, "") // trailing parenthetical
+    .replace(/[\s:,;.]+$/, "")
+    .replace(/\s+/g, " ")
+    .trim();
+  return name.length > NAME_MAX ? `${name.slice(0, NAME_MAX - 1).trimEnd()}\u2026` : name;
+}
+
+/** Up to n names from a numbered list. Handles markdown, headings, citations, descriptions and nested lists. */
 export function parseList(text: string, n: number): string[] {
   const out: string[] = [];
   const seen = new Set<string>();
-  for (const line of text.split(/\r?\n/)) {
-    const m = line.match(/^\s*(?:[-*]\s*)?#?(\d{1,2})[.):]\s*(.+)$/);
+  const body = text.replace(/<think>[\s\S]*?<\/think>/gi, "");
+  let topIndent: number | null = null;
+  for (const line of body.split(/\r?\n/)) {
+    const m = line.match(/^(\s*)(?:[-*]\s*)?(?:#{1,6}\s*)?(?:\*\*|__)?#?(\d{1,2})[.):](?:\*\*|__)?\s*(.+)$/);
     if (!m) continue;
-    let name = m[2]
-      .replace(/\[(\d+|[a-z])\]/gi, "") // citation markers like [1]
-      .replace(/(\*\*|__)(.+?)\1/g, "$2") // paired bold markers
-      .replace(/`/g, "") // code markers
-      .replace(/^[*_](.+)[*_]$/, "$1") // a name wrapped in single emphasis
-      .replace(/\s+[-:\u2013\u2014]\s+.*$/, "") // " - description"
-      .replace(/\s*\(.*\)\s*$/, "") // trailing parenthetical
-      .replace(/\s+/g, " ")
-      .trim();
+    const indent = m[1].replace(/\t/g, "    ").length;
+    if (topIndent === null) topIndent = indent;
+    if (indent >= topIndent + 2) continue; // a sub-item under the last pick
+    const name = cleanName(m[3]);
     if (!name) continue;
-    if (name.length > NAME_MAX) name = `${name.slice(0, NAME_MAX - 1).trimEnd()}…`;
     const k = name.toLowerCase();
     if (seen.has(k)) continue;
     seen.add(k);
@@ -170,13 +204,16 @@ export function parseList(text: string, n: number): string[] {
   return out;
 }
 
-export type AskError = "key" | "model" | "limit" | "network" | "timeout" | "unreadable" | "provider";
+export type AskError = "key" | "model" | "limit" | "blocked" | "cap" | "network" | "timeout" | "unreadable" | "provider";
+
+const UNKNOWN_MODEL = /(model\W.{0,60}(not found|does not exist|doesn't exist|not a valid|is invalid|unknown|not supported)|(no such|invalid|unknown|unsupported) model)/i;
 
 /** Map an HTTP status to something the visitor can act on. */
 export function errorFor(status: number, bodyText: string): AskError {
+  if (/moderation|flagged/i.test(bodyText) && (status === 400 || status === 403)) return "blocked";
   if (status === 401 || status === 403) return "key";
   if (status === 404) return "model";
-  if (status === 400 && /model/i.test(bodyText)) return "model";
+  if (status === 400 && UNKNOWN_MODEL.test(bodyText)) return "model";
   if (status === 400 && /api[ _-]?key/i.test(bodyText)) return "key";
   if (status === 429 || status === 402) return "limit";
   return "provider";
@@ -193,13 +230,17 @@ export async function askLane(lane: Lane, key: string, question: string, n: List
   outer?.addEventListener("abort", onOuter);
   try {
     // No cookies ride along, and no referrer tells the provider which page sent it.
-    const res = await fetch(url, { ...init, signal: controller.signal, credentials: "omit", referrerPolicy: "no-referrer", cache: "no-store" });
+    // redirect: "error" so a key in a custom header can never follow a redirect to another host.
+    const res = await fetch(url, { ...init, signal: controller.signal, credentials: "omit", referrerPolicy: "no-referrer", cache: "no-store", redirect: "error" });
     if (!res.ok) {
       const text = await res.text().catch(() => "");
       return { ok: false, error: errorFor(res.status, text.slice(0, 2000)) };
     }
-    const list = parseList(extractText(lane.transport, await res.json().catch(() => null)), n);
-    return list.length > 0 ? { ok: true, list } : { ok: false, error: "unreadable" };
+    const body = await res.json().catch(() => null);
+    if (controller.signal.aborted) return { ok: false, error: controller.signal.reason === "timeout" ? "timeout" : "network" };
+    const list = parseList(extractText(lane.transport, body), n);
+    if (list.length > 0) return { ok: true, list };
+    return { ok: false, error: hitCap(lane.transport, body) ? "cap" : "unreadable" };
   } catch {
     return { ok: false, error: controller.signal.aborted && controller.signal.reason === "timeout" ? "timeout" : "network" };
   } finally {
@@ -208,12 +249,13 @@ export async function askLane(lane: Lane, key: string, question: string, n: List
   }
 }
 
-/** Distinct column labels: a second lane with the same name gets a number. */
-export function uniqueLabels(lanes: Lane[]): Lane[] {
-  const seen = new Map<string, number>();
+/** Distinct column labels. A repeated name gets a number from `format` (copy lives in content.ts). */
+export function uniqueLabels(lanes: Lane[], format: (label: string, n: number) => string): Lane[] {
+  const used = new Set<string>();
   return lanes.map((l) => {
-    const n = (seen.get(l.label) ?? 0) + 1;
-    seen.set(l.label, n);
-    return n === 1 ? l : { ...l, label: `${l.label} (${n})` };
+    let label = l.label;
+    for (let n = 2; used.has(label); n++) label = format(l.label, n);
+    used.add(label);
+    return label === l.label ? l : { ...l, label };
   });
 }
