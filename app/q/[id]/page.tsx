@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AgreementMeter } from "@/components/agreement";
+import { RankTable } from "@/components/rank-table";
 import { aliases, question as copy, site, summaryCopy } from "@/content";
 import { canonical, diffLists, overlapSentence, topPickSentence } from "@/lib/analysis";
 import { MODELS, getQuestion, getQuestions } from "@/lib/snapshots";
@@ -70,40 +71,7 @@ export default async function QuestionPage(props: PageProps<"/q/[id]">) {
           {copy.gridCaption(last).text}
           <span className="font-mono">{last}</span>.
         </p>
-        <table aria-labelledby="grid" className="mt-6 w-full border-collapse text-left">
-          <thead>
-            <tr className="border-b border-ink text-sm text-secondary">
-              <th scope="col" className="py-3 pr-2 font-normal">
-                <span className="sr-only">{copy.pickColumn}</span>
-              </th>
-              {MODELS.map((m) => (
-                <th key={m} scope="col" className="w-[3.25rem] py-3 text-center font-normal sm:w-28">
-                  <span className="sm:hidden" aria-hidden="true">
-                    {copy.shortModel[m] ?? m}
-                  </span>
-                  <span className="sr-only sm:not-sr-only">{m}</span>
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {q.grid.map((row) => (
-              <tr key={row.name} className="border-b border-hairline">
-                <th
-                  scope="row"
-                  className={`py-3 pr-2 align-baseline font-normal leading-snug ${row.count === MODELS.length ? "font-display text-lg" : row.count === 1 ? "text-secondary" : ""}`}
-                >
-                  {row.name}
-                </th>
-                {MODELS.map((m) => (
-                  <td key={m} className="py-3 text-center align-baseline font-mono text-sm">
-                    {row.ranks[m] ?? <span className="sr-only">{copy.notListed}</span>}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <RankTable grid={q.grid} models={MODELS} labelledBy="grid" />
       </section>
 
       <section aria-labelledby="changes" className="mt-16 sm:mt-20">

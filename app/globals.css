@@ -6,6 +6,7 @@
   --color-ink: #141516;
   --color-secondary: #585b5e;
   --color-hairline: #c5c7c8;
+  --color-edge: #8d9398;
   --color-graphite: #17181a;
   --color-chrome: #c9cdd1;
 
@@ -46,6 +47,8 @@ a {
 
 :focus-visible {
   outline: 2px solid var(--color-graphite);
+  /* The ring appears at full strength at once, not faded in by a hover transition. */
+  transition-property: none;
   outline-offset: 3px;
   border-radius: 2px;
 }

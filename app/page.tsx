@@ -51,6 +51,15 @@ export default function HomePage() {
           </Link>
         </div>
         <p className="mt-10 max-w-[58ch] text-base leading-relaxed text-secondary sm:text-lg">{home.intro}</p>
+        <a
+          href="/ask"
+          className="group mt-6 -ml-1 inline-flex min-h-11 items-center gap-2 px-1 text-lg underline decoration-hairline underline-offset-[0.25em] transition-colors duration-300 hover:decoration-ink"
+        >
+          {home.askYourOwn}
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-0.5">
+            <path d="M5 2.5 9.5 7 5 11.5" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </a>
       </section>
 
       <section aria-labelledby="all-questions" className="mt-24 sm:mt-32">
