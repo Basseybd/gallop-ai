@@ -39,6 +39,18 @@ export function useOpenRouter() {
       window.history.replaceState(null, "", window.location.pathname);
     }
 
+    if (params.has("error") && !code) {
+      // The visitor cancelled on OpenRouter, or it refused. Say so and drop the stash.
+      const stash = readStash(takeStash(), Date.now());
+      const fail = async () => {
+        await Promise.resolve();
+        if (stash) setCarried({ question: stash.question, length: stash.length });
+        setState("failed");
+      };
+      void fail();
+      return;
+    }
+
     if (!code) {
       // An abandoned connect (back button, or OpenRouter sent an error) leaves a stash behind. Drop it.
       const stale = takeStash();

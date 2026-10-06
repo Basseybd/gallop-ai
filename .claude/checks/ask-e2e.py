@@ -171,4 +171,23 @@ with sync_playwright() as p:
     ok("six lanes: table scrolls in its region", pg.evaluate("(()=>{const r=document.querySelector('[role=region]');return !!r && r.scrollWidth>r.clientWidth})()"))
     ctx.close(); b.close()
 
+# ---------- F: answers and lane labels named like Object.prototype members ----------
+with sync_playwright() as p:
+    b=p.chromium.launch(); ctx=b.new_context(); pg=ctx.new_page(); errs=[]
+    pg.on("pageerror", lambda e: errs.append(str(e)))
+    proto={"OpenAI":["constructor","hasOwnProperty","A"],"Claude":["toString","__proto__","A"],"Gemini":["valueOf","A","B"]}
+    def proto_route(route):
+        host=urlparse(route.request.url).hostname; model=[m for m,h in HOSTS.items() if h==host][0]
+        route.fulfill(status=200, content_type="application/json", body=json.dumps(body_for(host, proto[model])), headers={"access-control-allow-origin":"*"})
+    for h in list(HOSTS.values())[:3]: pg.route(f"https://{h}/**", proto_route)
+    pg.goto(B+"/ask", wait_until="networkidle")
+    pg.get_by_label("Question", exact=True).fill("Rank JS object methods")
+    pg.get_by_role("button", name="Use your own provider keys instead").click()
+    for m in ["OpenAI","Claude","Gemini"]: pg.get_by_label(f"{m} API key").fill(KEYS[m])
+    pg.get_by_role("button", name="Ask", exact=True).click()
+    pg.wait_for_selector("text=Every pick", timeout=15000)
+    t=pg.inner_text("main")
+    ok("prototype-named answers render", "constructor" in t and "toString" in t and "hasOwnProperty" in t and not errs, errs[:2])
+    ctx.close(); b.close()
+
 for n,c,d in results: print(("PASS " if c else "FAIL ")+n+("" if c else f"  {d}"))

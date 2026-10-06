@@ -120,3 +120,17 @@ test("many lone dissenters collapse into one sentence", () => {
   const latest = { a: ["X"], b: ["X"], c: ["P"], d: ["Q"], e: ["R"], f: ["S"] };
   assert.equal(topPickSentence(summarize(latest), c), "Two of six put X first. The other four all pick something different.");
 });
+
+test("answers named like Object.prototype members are plain names", () => {
+  for (const name of ["constructor", "toString", "hasOwnProperty", "__proto__", "valueOf"]) {
+    assert.equal(canonical(name, {}), name);
+  }
+  // Built the way results.tsx builds it, so "__proto__" is an ordinary own key.
+  const latest: Record<string, string[]> = Object.create(null);
+  latest["__proto__"] = ["constructor", "A"];
+  latest.b = ["toString", "A"];
+  const s = summarize(latest);
+  assert.deepEqual(s.models, ["__proto__", "b"]);
+  assert.equal(rankGrid(latest).length, 3);
+  assert.equal(rankGrid(latest)[0].name, "A");
+});

@@ -8,6 +8,8 @@ Live at [gallop-ai-eight.vercel.app](https://gallop-ai-eight.vercel.app).
 
 ![Gallop home page](docs/screenshot.png)
 
+![Ask your own: five models side by side](docs/ask.png)
+
 ## About the data
 
 The snapshots in `data/` come from the first prototype of this project. They were committed in one batch in August 2025, with a top five per model, per question, labeled by month from Jul 2024 to Jul 2025. The prompts, model versions and how each month was produced weren't recorded, so treat it as a sample, not a study, and the month labels as labels, not capture dates. Most lists barely move from one label to the next, which is why the site leads with how the models differ from each other. Nobody checked whether any answer is right.

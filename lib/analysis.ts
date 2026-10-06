@@ -36,7 +36,8 @@ export function present(latest: Lists): string[] {
 /** Map spelling variants to one display name, then compare case-insensitively. */
 export function canonical(name: string, aliases: Aliases): string {
   const trimmed = name.trim();
-  return curly(aliases[trimmed] ?? trimmed);
+  // Own keys only: an answer like "constructor" must not pick up Object.prototype.constructor.
+  return curly(Object.hasOwn(aliases, trimmed) ? aliases[trimmed] : trimmed);
 }
 
 /** Typographic apostrophes for display. */

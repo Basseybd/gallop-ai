@@ -17,7 +17,7 @@ export function RankTable({ grid, models, labelledBy, wide = false }: { grid: Ra
               ) : (
                 <>
                   <span className="sm:hidden" aria-hidden="true">
-                    {copy.shortModel[m] ?? m}
+                    {Object.hasOwn(copy.shortModel, m) ? copy.shortModel[m] : m}
                   </span>
                   <span className="sr-only sm:not-sr-only">{m}</span>
                 </>
