@@ -14,15 +14,16 @@ export type LaneStatus = { state: "waiting" } | { state: "done"; list: string[] 
 const smCols: Record<number, string> = { 2: "sm:grid-cols-2", 3: "sm:grid-cols-3", 4: "sm:grid-cols-4", 5: "sm:grid-cols-3", 6: "sm:grid-cols-3" };
 function cellClass(i: number, n: number): string {
   const sm = n === 4 ? 4 : n === 2 ? 2 : 3;
+  const phoneLeft = i % 2 === 1;
+  const phoneTop = i >= 2;
+  const smLeft = i % sm !== 0;
+  const smTop = i >= sm;
+  // Emit exactly one class per breakpoint for each border, so no reset fights a setter in the cascade.
   return [
     "min-w-0 border-hairline py-5",
-    // phone: 2 columns
-    i % 2 === 1 ? "border-l pl-4" : "pr-4",
-    i >= 2 ? "border-t" : "",
-    // wider: reset, then lay out for `sm` columns
-    "sm:border-l-0 sm:border-t-0 sm:pl-0 sm:pr-5",
-    i % sm !== 0 ? "sm:border-l sm:pl-5" : "",
-    i >= sm ? "sm:border-t" : "",
+    phoneLeft ? (smLeft ? "border-l pl-4 sm:pl-5" : "border-l pl-4 sm:border-l-0 sm:pl-0") : smLeft ? "sm:border-l sm:pl-5" : "",
+    phoneLeft || !smLeft ? "pr-4 sm:pr-5" : "pr-4 sm:pr-5",
+    phoneTop ? (smTop ? "border-t" : "border-t sm:border-t-0") : smTop ? "sm:border-t" : "",
   ].join(" ");
 }
 
