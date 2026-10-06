@@ -3,7 +3,7 @@
 Last updated Oct 6, 2026. Read this first, then `.claude/plan.md`, `.claude/claude-security-guidance.md` and `.claude/lessons.md`.
 
 ## Where it stands
-- Branch `ask` is pushed and has a PR open against `main` (see the PR for the full council report).
+- Branch `ask` is pushed. PR #11 is open against `main` with the full council report: https://github.com/Basseybd/gallop-ai/pull/11
 - Live site: https://gallop-ai-eight.vercel.app. `main` has the static site (PR #3) and the URL fix (PR #10).
 - Lint, typecheck, 31 unit tests and the build pass on a clean checkout. `.claude/checks/ask-e2e.py` passes 41 of 41 against a local production build.
 - Two council rounds are done: a full council of 8 lanes, then a verifier with the red team's browser scenarios. Everything from both is fixed or recorded as accepted in `.claude/claude-security-guidance.md` and `.claude/lessons.md`.
