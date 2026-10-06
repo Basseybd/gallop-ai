@@ -2,11 +2,10 @@
 
 Last updated Oct 6, 2026. Read this first, then `.claude/plan.md`, `.claude/claude-security-guidance.md` and `.claude/lessons.md`.
 
-## Where it stands
-- Branch `ask` is pushed. PR #11 is open against `main` with the full council report: https://github.com/Basseybd/gallop-ai/pull/11
-- Live site: https://gallop-ai-eight.vercel.app. `main` has the static site (PR #3) and the URL fix (PR #10).
-- Lint, typecheck, 31 unit tests and the build pass on a clean checkout. `.claude/checks/ask-e2e.py` passes 41 of 41 against a local production build.
-- Two council rounds are done: a full council of 8 lanes, then a verifier with the red team's browser scenarios. Everything from both is fixed or recorded as accepted in `.claude/claude-security-guidance.md` and `.claude/lessons.md`.
+## Where it stands (Oct 6, evening)
+- PR #11 is merged, and /ask is live at https://gallop-ai-eight.vercel.app/ask.
+- CI had been red on main since the Oct 6 Dependabot merges: TypeScript 7 breaks typescript-eslint, and ESLint 10 crashes eslint-plugin-react. PR #12 pins both and makes Dependabot skip those majors. Its CI is green; merge it.
+- Left for Bassey: test Connect OpenRouter for real, try a Perplexity key in keys mode, set Node 24 in Vercel, fill in the GitHub About box and topics, pin the repo, revoke the old prototype keys, and add Gallop to basseyduke.io.
 
 ## What /ask is (decided with Bassey, Oct 5)
 - Visitors compare any 2 to 6 models on one question, top 3, 5 or 10.
